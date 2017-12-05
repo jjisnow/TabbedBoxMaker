@@ -36,7 +36,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-__version__ = "0.94" ### please report bugs, suggestions etc at https://github.com/paulh-rnd/TabbedBoxMaker ###
+__version__ = "0.94-johusman" ### please report bugs, suggestions etc at https://github.com/paulh-rnd/TabbedBoxMaker ###
 
 import os,sys,inkex,simplestyle,gettext,math
 _ = gettext.gettext
@@ -83,9 +83,12 @@ def side((rx,ry),(sox,soy),(eox,eoy),tabVec,length,(dirx,diry),isTab,isDivider,n
   
   if equalTabs:
     gapWidth=tabWidth=length/divs
-  else:
+  elif divs != tabs:
     tabWidth=nomTab
     gapWidth=(length-tabs*nomTab)/(divs-tabs)
+  else:
+    tabWidth=nomTab
+    gapWidth=(length-tabs*nomTab)
     
   if isTab:                 # kerf correction
     gapWidth-=correction
@@ -222,6 +225,8 @@ class BoxMaker(inkex.Effect):
         dest='width',default=100,help='Width of Box')
       self.OptionParser.add_option('--depth',action='store',type='float',
         dest='height',default=100,help='Height of Box')
+      self.OptionParser.add_option('--bevel',action='store',type='float',
+        dest='bevel',default=10,help='Bevel width')
       self.OptionParser.add_option('--tab',action='store',type='float',
         dest='tab',default=25,help='Nominal Tab Width')
       self.OptionParser.add_option('--equal',action='store',type='int',
@@ -303,6 +308,7 @@ class BoxMaker(inkex.Effect):
         Y = self.unittouu( str(self.options.width) + unit )
 
     Z = self.unittouu( str(self.options.height)  + unit )
+    bevel = self.unittouu( str(self.options.bevel) + unit )
     thickness = self.unittouu( str(self.options.thickness)  + unit )
     nomTab = self.unittouu( str(self.options.tab) + unit )
     equalTabs=self.options.equal
@@ -358,7 +364,8 @@ class BoxMaker(inkex.Effect):
       error=1     
 
     if error: exit()
-   
+
+
     # layout format:(rootx),(rooty),Xlength,Ylength,tabInfo,tabbed,pieceType
     # root= (spacing,X,Y,Z) * values in tuple
     # tabInfo= <abcd> 0=holes 1=tabs
@@ -367,10 +374,24 @@ class BoxMaker(inkex.Effect):
     # pieceType: 1=XY, 2=XZ, 3=ZY
     # note first two pieces in each set are the X-divider template and Y-divider template respectively
     if boxtype==2: # One side open (X,Y)
-      if   layout==1: # Diagramatic Layout
+      if layout==1: # Diagramatic Layout
         pieces=[[(2,0,0,1),(3,0,1,1),X,Z,0b1010,0b1101,2],[(1,0,0,0),(2,0,0,1),Z,Y,0b1111,0b1110,3],
                 [(2,0,0,1),(2,0,0,1),X,Y,0b0000,0b1111,1],[(3,1,0,1),(2,0,0,1),Z,Y,0b1111,0b1011,3],
-                [(4,1,0,2),(2,0,0,1),X,Y,0b0000,0b0000,1],[(2,0,0,1),(1,0,0,0),X,Z,0b1010,0b0111,2]]
+                [(4,1,0,2),(2,0,0,1),X+kerf*2,Y+kerf*2,0b0000,0b0000,1],[(2,0,0,1),(1,0,0,0),X,Z,0b1010,0b0111,2],
+                [(3,1,0,1),(3,0,0,0),X,bevel,0b0000,0b0000,2],[(3,1,0,1),(3,0,0,0.5),X,bevel,0b0000,0b0000,2],
+                [(3,1,0,1),(6,0,1,1),X,bevel,0b0000,0b0000,2],[(3,1,0,1),(6,0,1,1.5),X,bevel,0b0000,0b0000,2],
+                [(0,0,0,-1.6),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
+                [(0,0,0,-1.2),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
+                [(0,0,0,-0.8),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
+                [(0,0,0,-0.4),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
+                [(0,0,0,-1.00),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,-0.50),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,0.00),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,0.50),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,-1.00),(6,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,-0.5),(6,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,0.00),(6,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,0.50),(6,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2]]
       elif layout==2: # 3 Piece Layout
         pieces=[[(2,0,0,1),(2,0,1,0),X,Z,0b1010,0b1101,2],[(1,0,0,0),(1,0,0,0),Z,Y,0b1111,0b1110,3],
                 [(2,0,0,1),(1,0,0,0),X,Y,0b0000,0b1111,1]]
@@ -382,6 +403,10 @@ class BoxMaker(inkex.Effect):
         pieces=[[(2,0,0,1),(3,0,1,1),X,Z,0b1001,0b1101,2],[(1,0,0,0),(2,0,0,1),Z,Y,0b1100,0b1110,3],
                 [(2,0,0,1),(2,0,0,1),X,Y,0b1100,0b1111,1],[(3,1,0,1),(2,0,0,1),Z,Y,0b0110,0b1011,3],
                 [(4,1,0,2),(2,0,0,1),X,Y,0b0110,0b0000,1],[(2,0,0,1),(1,0,0,0),X,Z,0b1100,0b0111,2]]
+      elif layout==5: # Test
+        pieces=[[(2,0,0,1),(3,0,1,1),X,Z,0b1010,0b1101,2],[(1,0,0,0),(2,0,0,1),Z,Y,0b1111,0b1110,3],
+                [(2,0,0,1),(2,0,0,1),X,Y,0b0000,0b1111,1],[(3,1,0,1),(2,0,0,1),Z,Y,0b1111,0b1011,3],
+                [(4,1,0,2),(2,0,0,1),X,Y,0b0000,0b0000,1],[(2,0,0,1),(1,0,0,0),X,Z,0b1010,0b0111,2]]
     elif boxtype==3: # Two sides open (X,Y and X,Z)
       if   layout==1: # Diagramatic Layout
         pieces=[[(2,0,0,1),(1,0,0,0),X,Z,0b1010,0b0111,2],[(1,0,0,0),(2,0,0,1),Z,Y,0b1111,0b1100,3],                
