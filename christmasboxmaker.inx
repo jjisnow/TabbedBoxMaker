@@ -9,8 +9,6 @@
 
   <param name="unit" _gui-text="Unit" type="optiongroup" appearance="minimal">
     <option value="mm">mm</option>
-    <option value="cm">cm</option>
-    <option value="in">in</option>
   </param>
 
   <param name="inside" type="optiongroup" _gui-text="Box Dimensions">
@@ -33,16 +31,12 @@
     <_option value="1">Hairline (0.002" for Epilog)</_option>
   </param>
 
-  <param name="thickness" type="float" precision="2" min="0.0" max="10000.0" _gui-text="Material Thickness">3.0</param>
-  <param name="kerf" type="float" precision="3"  min="0.0" max="10000.0" _gui-text="Kerf (cut width)">0.1</param>
-  <param name="clearance" type="float" precision="3"  min="0.0" max="10000.0" _gui-text="Joint clearance">0.01</param>
+  <param name="thickness" type="float" precision="2" min="0.0" max="10000.0" _gui-text="Material Thickness">3.9</param>
+  <param name="kerf" type="float" precision="3"  min="0.0" max="10000.0" _gui-text="Kerf (cut width)">0.25</param>
+  <param name="clearance" type="float" precision="3"  min="0.0" max="10000.0" _gui-text="Joint clearance">0.015</param>
 	
   <param name="style" _gui-text="Layout/Style" type="optiongroup" appearance="minimal">
     <option value="1">Diagramatic</option>
-    <option value="2">3 piece</option>
-    <option value="3">Inline(compact)</option>
-    <option value="4">Diag Alternate Tabs</option>
-    <option value="5">Test</option>
   </param>
 
   <param name="boxtype" _gui-text="Box Type" type="optiongroup" appearance="minimal">
@@ -53,9 +47,6 @@
   <param name="div_w" type="int" min="0" max="10" _gui-text="Dividers (Width axis)">0</param>
   <param name="keydiv" _gui-text="Key the dividers into" type="optiongroup" appearance="minimal">
     <option value="3">None</option>
-    <option value="2">Walls</option>
-    <option value="1">Floor / Ceiling</option>
-    <option value="0">All sides</option>
   </param>
 
   <param name="spacing" type="float" precision="2" min="0.0" max="10000.0" _gui-text="Space Between Parts">1.0</param> 
