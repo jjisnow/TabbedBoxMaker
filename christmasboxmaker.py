@@ -329,6 +329,7 @@ class BoxMaker(inkex.Effect):
       Z+=thickness*2
 
     correction=kerf-clearance
+    lidmargin=self.unittouu( '1mm' )
 
     # check input values mainly to avoid python errors
     # TODO restrict values to *correct* solutions
@@ -365,7 +366,6 @@ class BoxMaker(inkex.Effect):
 
     if error: exit()
 
-
     # layout format:(rootx),(rooty),Xlength,Ylength,tabInfo,tabbed,pieceType
     # root= (spacing,X,Y,Z) * values in tuple
     # tabInfo= <abcd> 0=holes 1=tabs
@@ -377,11 +377,11 @@ class BoxMaker(inkex.Effect):
       if layout==1: # Diagramatic Layout
         pieces=[[(2,0,0,1),(3,0,1,1),X,Z,0b1010,0b1101,2],[(1,0,0,0),(2,0,0,1),Z,Y,0b1111,0b1110,3],
                 [(2,0,0,1),(2,0,0,1),X,Y,0b0000,0b1111,1],[(3,1,0,1),(2,0,0,1),Z,Y,0b1111,0b1011,3],
-                [(4,1,0,2),(2,0,0,1),X+kerf*2,Y+kerf*2,0b0000,0b0000,1],[(2,0,0,1),(1,0,0,0),X,Z,0b1010,0b0111,2],
-                [(3,1,0,1),(3,0,0,0),X,bevel,0b0000,0b0000,2],[(3,1,0,1),(3,0,0,0.5),X,bevel,0b0000,0b0000,2],
+                [(4,1,0,2),(2,0,0,1),X+lidmargin,Y+lidmargin,0b0000,0b0000,1],[(2,0,0,1),(1,0,0,0),X,Z,0b1010,0b0111,2],
+                [(3,1,0,1),(3,0,0,0),X+lidmargin,bevel,0b0000,0b0000,2],[(3,1,0,1),(3,0,0,0.5),X+lidmargin,bevel,0b0000,0b0000,2],
                 [(3,1,0,1),(6,0,1,1),X,bevel,0b0000,0b0000,2],[(3,1,0,1),(6,0,1,1.5),X,bevel,0b0000,0b0000,2],
-                [(0,0,0,-1.6),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
-                [(0,0,0,-1.2),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
+                [(0,0,0,-1.6),(0,0,0,1),bevel,Y+thickness*2+lidmargin,0b0000,0b0000,2],
+                [(0,0,0,-1.2),(0,0,0,1),bevel,Y+thickness*2+lidmargin,0b0000,0b0000,2],
                 [(0,0,0,-0.8),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
                 [(0,0,0,-0.4),(0,0,0,1),bevel,Y+thickness*2,0b0000,0b0000,2],
                 [(0,0,0,-1.00),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
