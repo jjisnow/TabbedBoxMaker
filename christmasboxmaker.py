@@ -388,6 +388,8 @@ class BoxMaker(inkex.Effect):
                 [(0,0,0,-0.50),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
                 [(0,0,0,0.00),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
                 [(0,0,0,0.50),(3,0,0,0),bevel,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,-2.00),(10,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
+                [(0,0,0,-1.50),(10,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
                 [(0,0,0,-1.00),(10,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
                 [(0,0,0,-0.5),(10,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
                 [(0,0,0,0.00),(10,0,1,1),bevel+thickness,Z-bevel*2,0b0000,0b0000,2],
