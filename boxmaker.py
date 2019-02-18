@@ -244,7 +244,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
 class BoxMaker(inkex.Effect):
     def __init__(self):
         # Call the base class constructor.
-        inkex.Effect.__init__(self)
+        super(BoxMaker, self).__init__(self)
         # Define options
         self.OptionParser.add_option('--schroff', action='store', type='int',
                                      dest='schroff', default=0, help='Enable Schroff mode')
