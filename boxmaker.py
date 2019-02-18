@@ -102,29 +102,29 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
 
     """
 
-    divs = int(length / nomTab)  # divisions
+    divs = int(length / nom_tab)  # divisions
     if not divs % 2:
         divs -= 1  # make divs odd
     divs = float(divs)
     tabs = (divs - 1) / 2  # tabs for side
 
     if equalTabs:
-        gapWidth = tabWidth = length / divs
+        gap_width = tab_width = length / divs
     else:
-        tabWidth = nomTab
-        gapWidth = (length - tabs * nomTab) / (divs - tabs)
+        tab_width = nom_tab
+        gap_width = (length - tabs * nom_tab) / (divs - tabs)
 
     if is_tab:  # kerf correction
-        gapWidth -= correction
-        tabWidth += correction
+        gap_width -= correction
+        tab_width += correction
         first = correction / 2
     else:
-        gapWidth += correction
-        tabWidth -= correction
+        gap_width += correction
+        tab_width -= correction
         first = -correction / 2
 
-    firstVec = 0
-    secondVec = tab_vec
+    first_vec = 0
+    second_vec = tab_vec
     dirxN = 0 if dir_x else 1  # used to select operation on x or y
     diryN = 0 if dir_y else 1
     (Vx, Vy) = (rx + sox * thickness, ry + soy * thickness)
@@ -137,11 +137,11 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
 
     # generate line as tab or hole using:
     #   last co-ord:Vx,Vy ; tab dir:tab_vec  ; direction:dir_x,dir_y ; thickness:thickness
-    #   divisions:divs ; gap width:gapWidth ; tab width:tabWidth
+    #   divisions:divs ; gap width:gap_width ; tab width:tab_width
 
     for n in range(1, int(divs)):
         if ((n % 2) ^ (not is_tab)) and num_dividers > 0 and not is_divider:  # draw holes for divider joints in side walls
-            w = gapWidth if is_tab else tabWidth
+            w = gap_width if is_tab else tab_width
             if n == 1:
                 w -= sox * thickness
             for m in range(1, int(num_dividers) + 1):
@@ -150,17 +150,17 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
                 if n == 1:
                     Dx += sox * thickness
                 h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
-                Dx = Dx + dir_x * w + dirxN * firstVec + first * dir_x
-                Dy = Dy + dir_y * w + diryN * firstVec + first * dir_y
+                Dx = Dx + dir_x * w + dirxN * first_vec + first * dir_x
+                Dy = Dy + dir_y * w + diryN * first_vec + first * dir_y
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-                Dx = Dx + dirxN * secondVec
-                Dy = Dy + diryN * secondVec
+                Dx = Dx + dirxN * second_vec
+                Dy = Dy + diryN * second_vec
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-                Dx = Dx - (dir_x * w + dirxN * firstVec + first * dir_x)
-                Dy = Dy - (dir_y * w + diryN * firstVec + first * dir_y)
+                Dx = Dx - (dir_x * w + dirxN * first_vec + first * dir_x)
+                Dy = Dy - (dir_y * w + diryN * first_vec + first * dir_y)
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-                Dx = Dx - dirxN * secondVec
-                Dy = Dy - diryN * secondVec
+                Dx = Dx - dirxN * second_vec
+                Dy = Dy - diryN * second_vec
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                 drawS(h)
         if n % 2:
@@ -182,20 +182,20 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
                     Dy = Dy - diryN * thickness
                     h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                     drawS(h)
-            Vx = Vx + dir_x * gapWidth + dirxN * firstVec + first * dir_x
-            Vy = Vy + dir_y * gapWidth + diryN * firstVec + first * dir_y
+            Vx = Vx + dir_x * gap_width + dirxN * first_vec + first * dir_x
+            Vy = Vy + dir_y * gap_width + diryN * first_vec + first * dir_y
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
-            Vx = Vx + dirxN * secondVec
-            Vy = Vy + diryN * secondVec
+            Vx = Vx + dirxN * second_vec
+            Vy = Vy + diryN * second_vec
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
         else:
-            Vx = Vx + dir_x * tabWidth + dirxN * firstVec
-            Vy = Vy + dir_y * tabWidth + diryN * firstVec
+            Vx = Vx + dir_x * tab_width + dirxN * first_vec
+            Vy = Vy + dir_y * tab_width + diryN * first_vec
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
-            Vx = Vx + dirxN * secondVec
-            Vy = Vy + diryN * secondVec
+            Vx = Vx + dirxN * second_vec
+            Vy = Vy + diryN * second_vec
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
-        (secondVec, firstVec) = (-secondVec, -firstVec)  # swap tab direction
+        (second_vec, first_vec) = (-second_vec, -first_vec)  # swap tab direction
         first = 0
 
     # finish the line off
@@ -206,16 +206,16 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
             Dy = Vy + dir_x * div_spacing * m
             h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
             Dx = rx + eox * thickness + dir_x * length
-            Dy = Dy + dir_y * tabWidth + diryN * firstVec + first * dir_y
+            Dy = Dy + dir_y * tab_width + diryN * first_vec + first * dir_y
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-            Dx = Dx + dirxN * secondVec
-            Dy = Dy + diryN * secondVec
+            Dx = Dx + dirxN * second_vec
+            Dy = Dy + diryN * second_vec
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
             Dx = Vx
-            Dy = Dy - (dir_y * tabWidth + diryN * firstVec + first * dir_y)
+            Dy = Dy - (dir_y * tab_width + diryN * first_vec + first * dir_y)
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-            Dx = Dx - dirxN * secondVec
-            Dy = Dy - diryN * secondVec
+            Dx = Dx - dirxN * second_vec
+            Dy = Dy - diryN * second_vec
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
             drawS(h)
     return s
@@ -276,7 +276,7 @@ class BoxMaker(inkex.Effect):
                                      dest='keydiv', default=3, help='Key dividers into walls/floor')
 
     def effect(self):
-        global parent, nomTab, equalTabs, thickness, correction, divx, divy, hairline, DEFAULT_LINE_THICKNESS, keydivwalls, keydivfloor
+        global parent, nom_tab, equalTabs, thickness, correction, divx, divy, hairline, DEFAULT_LINE_THICKNESS, keydivwalls, keydivfloor
 
         # Get access to main SVG document element and get its dimensions.
         svg = self.document.getroot()
@@ -319,20 +319,20 @@ class BoxMaker(inkex.Effect):
         # default settings, some options removed, and a tiny amount of extra logic
         if schroff:
             # schroffmaker.inx
-            X = self.unittouu(str(self.options.hp * 5.08) + unit)
+            x = self.unittouu(str(self.options.hp * 5.08) + unit)
             # 122.5mm vertical distance between mounting hole centres of 3U Schroff panels
             row_height = rows * (row_centre_spacing + rail_height)
             # rail spacing in between rows but never between rows and case panels
             row_spacing_total = (rows - 1) * row_spacing
-            Y = row_height + row_spacing_total
+            y = row_height + row_spacing_total
         else:
             # boxmaker.inx
-            X = self.unittouu(str(self.options.length) + unit)
-            Y = self.unittouu(str(self.options.width) + unit)
+            x = self.unittouu(str(self.options.length) + unit)
+            y = self.unittouu(str(self.options.width) + unit)
 
-        Z = self.unittouu(str(self.options.height) + unit)
+        z = self.unittouu(str(self.options.height) + unit)
         thickness = self.unittouu(str(self.options.thickness) + unit)
-        nomTab = self.unittouu(str(self.options.tab) + unit)
+        nom_tab = self.unittouu(str(self.options.tab) + unit)
         equalTabs = self.options.equal
         kerf = self.unittouu(str(self.options.kerf) + unit)
         clearance = self.unittouu(str(self.options.clearance) + unit)
@@ -346,9 +346,9 @@ class BoxMaker(inkex.Effect):
         divOffset = keydivwalls * thickness
 
         if inside:  # if inside dimension selected correct values to outside dimension
-            X += thickness * 2
-            Y += thickness * 2
-            Z += thickness * 2
+            x += thickness * 2
+            y += thickness * 2
+            z += thickness * 2
 
         correction = kerf - clearance
 
@@ -357,13 +357,13 @@ class BoxMaker(inkex.Effect):
         # TODO restrict divisions to logical values
         error = 0
 
-        if min(X, Y, Z) == 0:
+        if min(x, y, z) == 0:
             inkex.errormsg('Error: Dimensions must be non zero')
             error = 1
-        if max(X, Y, Z) > max(widthDoc, heightDoc) * 10:  # crude test
+        if max(x, y, z) > max(widthDoc, heightDoc) * 10:  # crude test
             inkex.errormsg('Error: Dimensions Too Large')
             error = 1
-        if min(X, Y, Z) < 3 * nom_tab:
+        if min(x, y, z) < 3 * nom_tab:
             inkex.errormsg('Error: Tab size too large')
             error = 1
         if nom_tab < thickness:
@@ -372,13 +372,13 @@ class BoxMaker(inkex.Effect):
         if thickness == 0:
             inkex.errormsg('Error: Thickness is zero')
             error = 1
-        if thickness > min(X, Y, Z) / 3:  # crude test
+        if thickness > min(x, y, z) / 3:  # crude test
             inkex.errormsg('Error: Material too thick')
             error = 1
-        if correction > min(X, Y, Z) / 3:  # crude test
+        if correction > min(x, y, z) / 3:  # crude test
             inkex.errormsg('Error: Kerf/Clearence too large')
             error = 1
-        if spacing > max(X, Y, Z) * 10:  # crude test
+        if spacing > max(x, y, z) * 10:  # crude test
             inkex.errormsg('Error: Spacing too large')
             error = 1
         if spacing < kerf:
@@ -389,84 +389,84 @@ class BoxMaker(inkex.Effect):
             exit()
 
         # layout format:(rootx),(rooty),Xlength,Ylength,tabInfo,tabbed,pieceType
-        # root= (spacing,X,Y,Z) * values in tuple
+        # root= (spacing,x,y,z) * values in tuple
         # tabInfo= <abcd> 0=holes 1=tabs
         # tabbed= <abcd> 0=no tabs 1=tabs on this side
         # (sides: a=top, b=right, c=bottom, d=left)
         # pieceType: 1=XY, 2=XZ, 3=ZY
-        # note first two pieces in each set are the X-divider template and Y-divider template respectively
-        if boxtype == 2:  # One side open (X,Y)
+        # note first two pieces in each set are the x-divider template and y-divider template respectively
+        if boxtype == 2:  # One side open (x,y)
             if layout == 1:  # Diagramatic Layout
-                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), X, Z, 0b1010, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1111, 0b1110, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b1111, 0b1011, 3],
-                          [(4, 1, 0, 2), (2, 0, 0, 1), X, Y, 0b0000, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1010, 0b0111, 2]]
+                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1110, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1011, 3],
+                          [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0000, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2]]
             elif layout == 2:  # 3 Piece Layout
-                pieces = [[(2, 0, 0, 1), (2, 0, 1, 0), X, Z, 0b1010, 0b1101, 2], [(1, 0, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b1110, 3],
-                          [(2, 0, 0, 1), (1, 0, 0, 0), X, Y, 0b0000, 0b1111, 1]]
+                pieces = [[(2, 0, 0, 1), (2, 0, 1, 0), x, z, 0b1010, 0b1101, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b1110, 3],
+                          [(2, 0, 0, 1), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1]]
             elif layout == 3:  # Inline(compact) Layout
-                pieces = [[(5, 2, 0, 2), (1, 0, 0, 0), X, Z, 0b1111, 0b1101, 2], [(3, 2, 0, 0), (1, 0, 0, 0), Z, Y, 0b0101, 0b1110, 3],
-                          [(4, 2, 0, 1), (1, 0, 0, 0), Z, Y, 0b0101, 0b1011, 3], [(2, 1, 0, 0), (1, 0, 0, 0), X, Y, 0b0000, 0b1111, 1],
-                          [(6, 3, 0, 2), (1, 0, 0, 0), X, Z, 0b1111, 0b0111, 2]]
+                pieces = [[(5, 2, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b1101, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b0101, 0b1110, 3],
+                          [(4, 2, 0, 1), (1, 0, 0, 0), z, y, 0b0101, 0b1011, 3], [(2, 1, 0, 0), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1],
+                          [(6, 3, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b0111, 2]]
             elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
-                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), X, Z, 0b1001, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1100, 0b1110, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b0110, 0b1011, 3],
-                          [(4, 1, 0, 2), (2, 0, 0, 1), X, Y, 0b0110, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1100, 0b0111, 2]]
-        elif boxtype == 3:  # Two sides open (X,Y and X,Z)
+                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1001, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1100, 0b1110, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1011, 3],
+                          [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0110, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b0111, 2]]
+        elif boxtype == 3:  # Two sides open (x,y and x,z)
             if layout == 1:  # Diagramatic Layout
-                pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1010, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1111, 0b1100, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b0010, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b1111, 0b1001, 3]]
+                pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0010, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1001, 3]]
             elif layout == 2:  # 3 Piece Layout
-                pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1010, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1111, 0b1100, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b0010, 0b1101, 1]]
+                pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0010, 0b1101, 1]]
             elif layout == 3:  # Inline(compact) Layout
-                pieces = [[(2, 2, 0, 2), (1, 0, 0, 0), X, Z, 0b1010, 0b0111, 2], [(3, 2, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b1100, 3],
-                          [(2, 1, 0, 0), (1, 0, 0, 0), X, Y, 0b0010, 0b1101, 1], [(4, 2, 0, 1), (1, 0, 0, 0), Z, Y, 0b1111, 0b1001, 3]]
+                pieces = [[(2, 2, 0, 2), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b1100, 3],
+                          [(2, 1, 0, 0), (1, 0, 0, 0), x, y, 0b0010, 0b1101, 1], [(4, 2, 0, 1), (1, 0, 0, 0), z, y, 0b1111, 0b1001, 3]]
             elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
-                pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1100, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1111, 0b1100, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b1110, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b0110, 0b1001, 3]]
-        elif boxtype == 4:  # Three sides open (X,Y, X,Z and Z,Y)
+                pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1110, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1001, 3]]
+        elif boxtype == 4:  # Three sides open (x,y, x,z and z,y)
             if layout == 2:  # 3 Piece Layout
-                pieces = [[(2, 2, 0, 0), (2, 0, 1, 0), X, Z, 0b1111, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b0110, 3],
-                          [(2, 2, 0, 0), (1, 0, 0, 0), X, Y, 0b1100, 0b0011, 1]]
+                pieces = [[(2, 2, 0, 0), (2, 0, 1, 0), x, z, 0b1111, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0110, 3],
+                          [(2, 2, 0, 0), (1, 0, 0, 0), x, y, 0b1100, 0b0011, 1]]
             else:
-                pieces = [[(3, 3, 0, 0), (1, 0, 0, 0), X, Z, 0b1110, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b0110, 3],
-                          [(2, 2, 0, 0), (1, 0, 0, 0), X, Y, 0b1100, 0b0011, 1]]
-        elif boxtype == 5:  # Opposite ends open (X,Y)
+                pieces = [[(3, 3, 0, 0), (1, 0, 0, 0), x, z, 0b1110, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0110, 3],
+                          [(2, 2, 0, 0), (1, 0, 0, 0), x, y, 0b1100, 0b0011, 1]]
+        elif boxtype == 5:  # Opposite ends open (x,y)
             if layout == 1:  # Diagramatic Layout
-                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), X, Z, 0b1010, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b1111, 0b1010, 3],
-                          [(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1010, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1111, 0b1010, 3]]
+                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1010, 3],
+                          [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1010, 3]]
             elif layout == 2:  # 2 Piece Layout
-                pieces = [[(1, 0, 0, 1), (1, 0, 1, 1), X, Z, 0b1010, 0b0101, 2], [(2, 1, 0, 1), (1, 0, 0, 1), Z, Y, 0b1111, 0b1010, 3]]
+                pieces = [[(1, 0, 0, 1), (1, 0, 1, 1), x, z, 0b1010, 0b0101, 2], [(2, 1, 0, 1), (1, 0, 0, 1), z, y, 0b1111, 0b1010, 3]]
             elif layout == 3:  # Inline(compact) Layout
-                pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), X, Z, 0b1010, 0b0101, 2], [(3, 2, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b1010, 3],
-                          [(2, 1, 0, 0), (1, 0, 0, 0), X, Z, 0b1010, 0b0101, 2], [(4, 2, 0, 1), (2, 0, 0, 0), Z, Y, 0b1111, 0b1010, 3]]
+                pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b1010, 3],
+                          [(2, 1, 0, 0), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(4, 2, 0, 1), (2, 0, 0, 0), z, y, 0b1111, 0b1010, 3]]
             elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
-                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), X, Z, 0b1011, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b0111, 0b1010, 3],
-                          [(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1110, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1101, 0b1010, 3]]
-        elif boxtype == 6:  # 2 panels jointed (X,Y and Z,Y joined along Y)
-            pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), X, Y, 0b1011, 0b0100, 1], [(2, 1, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b0001, 3]]
+                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1011, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0111, 0b1010, 3],
+                          [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1110, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1101, 0b1010, 3]]
+        elif boxtype == 6:  # 2 panels jointed (x,y and z,y joined along y)
+            pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), x, y, 0b1011, 0b0100, 1], [(2, 1, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0001, 3]]
         else:  # Fully enclosed
             if layout == 1:  # Diagramatic Layout
-                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), X, Z, 0b1010, 0b1111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1111, 0b1111, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b1111, 0b1111, 3],
-                          [(4, 1, 0, 2), (2, 0, 0, 1), X, Y, 0b0000, 0b1111, 1], [(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1010, 0b1111, 2]]
+                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b1111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1111, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1111, 3],
+                          [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b1111, 2]]
             elif layout == 2:  # 3 Piece Layout
-                pieces = [[(2, 0, 0, 1), (2, 0, 1, 0), X, Z, 0b1010, 0b1111, 2], [(1, 0, 0, 0), (1, 0, 0, 0), Z, Y, 0b1111, 0b1111, 3],
-                          [(2, 0, 0, 1), (1, 0, 0, 0), X, Y, 0b0000, 0b1111, 1]]
+                pieces = [[(2, 0, 0, 1), (2, 0, 1, 0), x, z, 0b1010, 0b1111, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b1111, 3],
+                          [(2, 0, 0, 1), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1]]
             elif layout == 3:  # Inline(compact) Layout
-                pieces = [[(5, 2, 0, 2), (1, 0, 0, 0), X, Z, 0b1111, 0b1111, 2], [(3, 2, 0, 0), (1, 0, 0, 0), Z, Y, 0b0101, 0b1111, 3],
-                          [(6, 3, 0, 2), (1, 0, 0, 0), X, Z, 0b1111, 0b1111, 2], [(4, 2, 0, 1), (1, 0, 0, 0), Z, Y, 0b0101, 0b1111, 3],
-                          [(2, 1, 0, 0), (1, 0, 0, 0), X, Y, 0b0000, 0b1111, 1], [(1, 0, 0, 0), (1, 0, 0, 0), X, Y, 0b0000, 0b1111, 1]]
+                pieces = [[(5, 2, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b1111, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b0101, 0b1111, 3],
+                          [(6, 3, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b1111, 2], [(4, 2, 0, 1), (1, 0, 0, 0), z, y, 0b0101, 0b1111, 3],
+                          [(2, 1, 0, 0), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1], [(1, 0, 0, 0), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1]]
             elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
-                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), X, Z, 0b1001, 0b1111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), Z, Y, 0b1100, 0b1111, 3],
-                          [(2, 0, 0, 1), (2, 0, 0, 1), X, Y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), Z, Y, 0b0110, 0b1111, 3],
-                          [(4, 1, 0, 2), (2, 0, 0, 1), X, Y, 0b0110, 0b1111, 1], [(2, 0, 0, 1), (1, 0, 0, 0), X, Z, 0b1100, 0b1111, 2]]
+                pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1001, 0b1111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1100, 0b1111, 3],
+                          [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1111, 3],
+                          [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0110, 0b1111, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b1111, 2]]
 
         for idx, piece in enumerate(pieces):  # generate and draw each piece of the box
             (xs, xx, xy, xz) = piece[0]
             (ys, yx, yy, yz) = piece[1]
-            x = xs * spacing + xx * X + xy * Y + xz * Z  # root x co-ord for piece
-            y = ys * spacing + yx * X + yy * Y + yz * Z  # root y co-ord for piece
+            x = xs * spacing + xx * x + xy * y + xz * z  # root x co-ord for piece
+            y = ys * spacing + yx * x + yy * y + yz * z  # root y co-ord for piece
             dx = piece[2]
             dy = piece[3]
             tabs = piece[4]
@@ -479,8 +479,8 @@ class BoxMaker(inkex.Effect):
             btabs = tabbed >> 2 & 1
             ctabs = tabbed >> 1 & 1
             dtabs = tabbed & 1  # extract tabbed flag for each side
-            xspacing = (X - thickness) / (divy + 1)
-            yspacing = (Y - thickness) / (divx + 1)
+            xspacing = (x - thickness) / (divy + 1)
+            yspacing = (y - thickness) / (divx + 1)
             xholes = 1 if piece[6] < 3 else 0
             yholes = 1 if piece[6] != 2 else 0
             wall = 1 if piece[6] > 1 else 0
@@ -539,17 +539,17 @@ class BoxMaker(inkex.Effect):
                     btabs = 0
                     ctabs = 0
                     dtabs = 0
-                y = 4 * spacing + 1 * Y + 2 * Z  # root y co-ord for piece
-                for n in range(0, divx):  # generate X dividers
-                    x = n * (spacing + X)  # root x co-ord for piece
+                y = 4 * spacing + 1 * y + 2 * z  # root y co-ord for piece
+                for n in range(0, divx):  # generate x dividers
+                    x = n * (spacing + x)  # root x co-ord for piece
                     drawS(side(x, y, d, a, -b, a, keydivfloor * atabs * (-thickness if a else thickness), dx, 1, 0, a, 1, 0, 0, divOffset))  # side a
                     drawS(side(x + dx, y, -b, a, -b, -c, keydivwalls * btabs * (thickness if keydivwalls * b else -thickness), dy, 0, 1, b, 1, divy * xholes, xspacing, divOffset))  # side b
                     drawS(side(x + dx, y + dy, -b, -c, d, -c, keydivfloor * ctabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, divOffset))  # side c
                     drawS(side(x, y + dy, d, -c, d, a, keydivwalls * dtabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, divOffset))  # side d
             elif idx == 1:
-                y = 5 * spacing + 1 * Y + 3 * Z  # root y co-ord for piece
-                for n in range(0, divy):  # generate Y dividers
-                    x = n * (spacing + Z)  # root x co-ord for piece
+                y = 5 * spacing + 1 * y + 3 * z  # root y co-ord for piece
+                for n in range(0, divy):  # generate y dividers
+                    x = n * (spacing + z)  # root x co-ord for piece
                     drawS(side(x, y, d, a, -b, a, keydivwalls * atabs * (-thickness if a else thickness), dx, 1, 0, a, 1, divx * yholes, yspacing, thickness))  # side a
                     drawS(side(x + dx, y, -b, a, -b, -c, keydivfloor * btabs * (thickness if b else -thickness), dy, 0, 1, b, 1, 0, 0, thickness))  # side b
                     drawS(side(x + dx, y + dy, -b, -c, d, -c, keydivwalls * ctabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, thickness))  # side c
