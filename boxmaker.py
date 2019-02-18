@@ -124,8 +124,6 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
         tabWidth -= correction
         first = -correction / 2
 
-    s = []
-    h = []
     firstVec = 0
     secondVec = tabVec
     dirxN = 0 if dirx else 1  # used to select operation on x or y
