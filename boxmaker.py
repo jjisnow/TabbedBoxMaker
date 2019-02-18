@@ -38,14 +38,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 __version__ = "0.94"  # please report bugs, suggestions etc at https://github.com/paulh-rnd/TabbedBoxMaker ###
 
-import gettext
 import math
 import os
 
 import inkex
 import simplestyle
 
-_ = gettext.gettext
+inkex.localize()
 
 DEFAULT_LINE_THICKNESS = 1  # default unless overridden by settings
 
@@ -359,31 +358,31 @@ class BoxMaker(inkex.Effect):
         error = 0
 
         if min(X, Y, Z) == 0:
-            inkex.errormsg(_('Error: Dimensions must be non zero'))
+            inkex.errormsg('Error: Dimensions must be non zero')
             error = 1
         if max(X, Y, Z) > max(widthDoc, heightDoc) * 10:  # crude test
-            inkex.errormsg(_('Error: Dimensions Too Large'))
+            inkex.errormsg('Error: Dimensions Too Large')
             error = 1
-        if min(X, Y, Z) < 3 * nomTab:
-            inkex.errormsg(_('Error: Tab size too large'))
+        if min(X, Y, Z) < 3 * nom_tab:
+            inkex.errormsg('Error: Tab size too large')
             error = 1
-        if nomTab < thickness:
-            inkex.errormsg(_('Error: Tab size too small'))
+        if nom_tab < thickness:
+            inkex.errormsg('Error: Tab size too small')
             error = 1
         if thickness == 0:
-            inkex.errormsg(_('Error: Thickness is zero'))
+            inkex.errormsg('Error: Thickness is zero')
             error = 1
         if thickness > min(X, Y, Z) / 3:  # crude test
-            inkex.errormsg(_('Error: Material too thick'))
+            inkex.errormsg('Error: Material too thick')
             error = 1
         if correction > min(X, Y, Z) / 3:  # crude test
-            inkex.errormsg(_('Error: Kerf/Clearence too large'))
+            inkex.errormsg('Error: Kerf/Clearence too large')
             error = 1
         if spacing > max(X, Y, Z) * 10:  # crude test
-            inkex.errormsg(_('Error: Spacing too large'))
+            inkex.errormsg('Error: Spacing too large')
             error = 1
         if spacing < kerf:
-            inkex.errormsg(_('Error: Spacing too small'))
+            inkex.errormsg('Error: Spacing too small')
             error = 1
 
         if error:
