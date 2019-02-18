@@ -82,7 +82,7 @@ def drawCircle(r, cx, cy):
     inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), ell_attribs)
 
 
-def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivider, numDividers, divSpacing, divOffset):
+def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_divider, num_dividers, div_spacing, div_offset):
     """
     Args:
         rx: root X
@@ -91,15 +91,15 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
         soy: startOffset Y
         eox: endOffset X
         eoy: endOffset Y
-        tabVec:
+        tab_vec:
         length:
-        dirx: direction X
-        diry: direction Y
-        isTab:
-        isDivider:
-        numDividers:
-        divSpacing:
-        divOffset:
+        dir_x: direction X
+        dir_y: direction Y
+        is_tab:
+        is_divider:
+        num_dividers:
+        div_spacing:
+        div_offset:
 
     """
 
@@ -115,7 +115,7 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
         tabWidth = nomTab
         gapWidth = (length - tabs * nomTab) / (divs - tabs)
 
-    if isTab:  # kerf correction
+    if is_tab:  # kerf correction
         gapWidth -= correction
         tabWidth += correction
         first = correction / 2
@@ -125,9 +125,9 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
         first = -correction / 2
 
     firstVec = 0
-    secondVec = tabVec
-    dirxN = 0 if dirx else 1  # used to select operation on x or y
-    diryN = 0 if diry else 1
+    secondVec = tab_vec
+    dirxN = 0 if dir_x else 1  # used to select operation on x or y
+    diryN = 0 if dir_y else 1
     (Vx, Vy) = (rx + sox * thickness, ry + soy * thickness)
     s = 'M ' + str(Vx) + ',' + str(Vy) + ' '
 
@@ -137,61 +137,61 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
         Vx = rx
 
     # generate line as tab or hole using:
-    #   last co-ord:Vx,Vy ; tab dir:tabVec  ; direction:dirx,diry ; thickness:thickness
+    #   last co-ord:Vx,Vy ; tab dir:tab_vec  ; direction:dir_x,dir_y ; thickness:thickness
     #   divisions:divs ; gap width:gapWidth ; tab width:tabWidth
 
     for n in range(1, int(divs)):
-        if ((n % 2) ^ (not isTab)) and numDividers > 0 and not isDivider:  # draw holes for divider joints in side walls
-            w = gapWidth if isTab else tabWidth
+        if ((n % 2) ^ (not is_tab)) and num_dividers > 0 and not is_divider:  # draw holes for divider joints in side walls
+            w = gapWidth if is_tab else tabWidth
             if n == 1:
                 w -= sox * thickness
-            for m in range(1, int(numDividers) + 1):
-                Dx = Vx + -diry * divSpacing * m
-                Dy = Vy + dirx * divSpacing * m
+            for m in range(1, int(num_dividers) + 1):
+                Dx = Vx + -dir_y * div_spacing * m
+                Dy = Vy + dir_x * div_spacing * m
                 if n == 1:
                     Dx += sox * thickness
                 h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
-                Dx = Dx + dirx * w + dirxN * firstVec + first * dirx
-                Dy = Dy + diry * w + diryN * firstVec + first * diry
+                Dx = Dx + dir_x * w + dirxN * firstVec + first * dir_x
+                Dy = Dy + dir_y * w + diryN * firstVec + first * dir_y
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                 Dx = Dx + dirxN * secondVec
                 Dy = Dy + diryN * secondVec
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-                Dx = Dx - (dirx * w + dirxN * firstVec + first * dirx)
-                Dy = Dy - (diry * w + diryN * firstVec + first * diry)
+                Dx = Dx - (dir_x * w + dirxN * firstVec + first * dir_x)
+                Dy = Dy - (dir_y * w + diryN * firstVec + first * dir_y)
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                 Dx = Dx - dirxN * secondVec
                 Dy = Dy - diryN * secondVec
                 h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                 drawS(h)
         if n % 2:
-            if n == 1 and numDividers > 0 and isDivider:  # draw slots for dividers to slot into each other
-                for m in range(1, int(numDividers) + 1):
-                    Dx = Vx + -diry * (divSpacing * m + divOffset)
-                    Dy = Vy + dirx * (divSpacing * m - divOffset)
+            if n == 1 and num_dividers > 0 and is_divider:  # draw slots for dividers to slot into each other
+                for m in range(1, int(num_dividers) + 1):
+                    Dx = Vx + -dir_y * (div_spacing * m + div_offset)
+                    Dy = Vy + dir_x * (div_spacing * m - div_offset)
                     h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
-                    Dx = Dx + dirx * (first + length / 2)
-                    Dy = Dy + diry * (first + length / 2)
+                    Dx = Dx + dir_x * (first + length / 2)
+                    Dy = Dy + dir_y * (first + length / 2)
                     h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                     Dx = Dx + dirxN * thickness
                     Dy = Dy + diryN * thickness
                     h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
-                    Dx = Dx - dirx * (first + length / 2)
-                    Dy = Dy - diry * (first + length / 2)
+                    Dx = Dx - dir_x * (first + length / 2)
+                    Dy = Dy - dir_y * (first + length / 2)
                     h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                     Dx = Dx - dirxN * thickness
                     Dy = Dy - diryN * thickness
                     h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
                     drawS(h)
-            Vx = Vx + dirx * gapWidth + dirxN * firstVec + first * dirx
-            Vy = Vy + diry * gapWidth + diryN * firstVec + first * diry
+            Vx = Vx + dir_x * gapWidth + dirxN * firstVec + first * dir_x
+            Vy = Vy + dir_y * gapWidth + diryN * firstVec + first * dir_y
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
             Vx = Vx + dirxN * secondVec
             Vy = Vy + diryN * secondVec
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
         else:
-            Vx = Vx + dirx * tabWidth + dirxN * firstVec
-            Vy = Vy + diry * tabWidth + diryN * firstVec
+            Vx = Vx + dir_x * tabWidth + dirxN * firstVec
+            Vy = Vy + dir_y * tabWidth + diryN * firstVec
             s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
             Vx = Vx + dirxN * secondVec
             Vy = Vy + diryN * secondVec
@@ -200,20 +200,20 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
         first = 0
 
     # finish the line off
-    s += 'L ' + str(rx + eox * thickness + dirx * length) + ',' + str(ry + eoy * thickness + diry * length) + ' '
-    if isTab and numDividers > 0 and not isDivider:  # draw last for divider joints in side walls
-        for m in range(1, int(numDividers) + 1):
+    s += 'L ' + str(rx + eox * thickness + dir_x * length) + ',' + str(ry + eoy * thickness + dir_y * length) + ' '
+    if is_tab and num_dividers > 0 and not is_divider:  # draw last for divider joints in side walls
+        for m in range(1, int(num_dividers) + 1):
             Dx = Vx
-            Dy = Vy + dirx * divSpacing * m
+            Dy = Vy + dir_x * div_spacing * m
             h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
-            Dx = rx + eox * thickness + dirx * length
-            Dy = Dy + diry * tabWidth + diryN * firstVec + first * diry
+            Dx = rx + eox * thickness + dir_x * length
+            Dy = Dy + dir_y * tabWidth + diryN * firstVec + first * dir_y
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
             Dx = Dx + dirxN * secondVec
             Dy = Dy + diryN * secondVec
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
             Dx = Vx
-            Dy = Dy - (diry * tabWidth + diryN * firstVec + first * diry)
+            Dy = Dy - (dir_y * tabWidth + diryN * firstVec + first * dir_y)
             h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
             Dx = Dx - dirxN * secondVec
             Dy = Dy - diryN * secondVec
