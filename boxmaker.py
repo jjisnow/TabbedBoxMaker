@@ -126,7 +126,7 @@ def side(rx, ry, sox, soy, eox, eoy, tabVec, length, dirx, diry, isTab, isDivide
 
     s = []
     h = []
-    firstVec = 0;
+    firstVec = 0
     secondVec = tabVec
     dirxN = 0 if dirx else 1  # used to select operation on x or y
     diryN = 0 if diry else 1
@@ -473,14 +473,14 @@ class BoxMaker(inkex.Effect):
             dx = piece[2]
             dy = piece[3]
             tabs = piece[4]
-            a = tabs >> 3 & 1;
-            b = tabs >> 2 & 1;
-            c = tabs >> 1 & 1;
+            a = tabs >> 3 & 1
+            b = tabs >> 2 & 1
+            c = tabs >> 1 & 1
             d = tabs & 1  # extract tab status for each side
             tabbed = piece[5]
-            atabs = tabbed >> 3 & 1;
-            btabs = tabbed >> 2 & 1;
-            ctabs = tabbed >> 1 & 1;
+            atabs = tabbed >> 3 & 1
+            btabs = tabbed >> 2 & 1
+            ctabs = tabbed >> 1 & 1
             dtabs = tabbed & 1  # extract tabbed flag for each side
             xspacing = (X - thickness) / (divy + 1)
             yspacing = (Y - thickness) / (divx + 1)
@@ -534,14 +534,14 @@ class BoxMaker(inkex.Effect):
 
             if idx == 0:
                 if not keydivwalls:
-                    a = 1;
-                    b = 1;
-                    c = 1;
-                    d = 1;
-                    atabs = 0;
-                    btabs = 0;
-                    ctabs = 0;
-                    dtabs = 0;
+                    a = 1
+                    b = 1
+                    c = 1
+                    d = 1
+                    atabs = 0
+                    btabs = 0
+                    ctabs = 0
+                    dtabs = 0
                 y = 4 * spacing + 1 * Y + 2 * Z  # root y co-ord for piece
                 for n in range(0, divx):  # generate X dividers
                     x = n * (spacing + X)  # root x co-ord for piece
