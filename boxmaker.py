@@ -150,41 +150,54 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
                 if n == 1:
                     Dx += sox * thickness
                 h = 'M {},{} '.format(Dx, Dy)
+
                 Dx = Dx + dir_x * w + dirxN * first_vec + first * dir_x
                 Dy = Dy + dir_y * w + diryN * first_vec + first * dir_y
                 h += 'L {},{} '.format(Dx, Dy)
+
                 Dx = Dx + dirxN * second_vec
                 Dy = Dy + diryN * second_vec
                 h += 'L {},{} '.format(Dx, Dy)
+
                 Dx = Dx - (dir_x * w + dirxN * first_vec + first * dir_x)
                 Dy = Dy - (dir_y * w + diryN * first_vec + first * dir_y)
                 h += 'L {},{} '.format(Dx, Dy)
+
                 Dx = Dx - dirxN * second_vec
                 Dy = Dy - diryN * second_vec
                 h += 'L {},{} '.format(Dx, Dy)
+
                 drawS(h)
         if n % 2:
             if n == 1 and num_dividers > 0 and is_divider:  # draw slots for dividers to slot into each other
                 for m in range(1, int(num_dividers) + 1):
+
                     Dx = Vx + -dir_y * (div_spacing * m + div_offset)
                     Dy = Vy + dir_x * (div_spacing * m - div_offset)
                     h = 'M {},{} '.format(Dx, Dy)
+
                     Dx = Dx + dir_x * (first + length / 2)
                     Dy = Dy + dir_y * (first + length / 2)
                     h += 'L {},{} '.format(Dx, Dy)
+
                     Dx = Dx + dirxN * thickness
                     Dy = Dy + diryN * thickness
                     h += 'L {},{} '.format(Dx, Dy)
+
                     Dx = Dx - dir_x * (first + length / 2)
                     Dy = Dy - dir_y * (first + length / 2)
                     h += 'L {},{} '.format(Dx, Dy)
+
                     Dx = Dx - dirxN * thickness
                     Dy = Dy - diryN * thickness
                     h += 'L {},{} '.format(Dx, Dy)
+
                     drawS(h)
+
             Vx = Vx + dir_x * gap_width + dirxN * first_vec + first * dir_x
             Vy = Vy + dir_y * gap_width + diryN * first_vec + first * dir_y
             s += 'L {},{} '.format(Vx, Vy)
+
             Vx = Vx + dirxN * second_vec
             Vy = Vy + diryN * second_vec
             s += 'L {},{} '.format(Vx, Vy)
@@ -192,6 +205,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
             Vx = Vx + dir_x * tab_width + dirxN * first_vec
             Vy = Vy + dir_y * tab_width + diryN * first_vec
             s += 'L {},{} '.format(Vx, Vy)
+
             Vx = Vx + dirxN * second_vec
             Vy = Vy + diryN * second_vec
             s += 'L {},{} '.format(Vx, Vy)
@@ -202,21 +216,27 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
     s += 'L ' + str(rx + eox * thickness + dir_x * length) + ',' + str(ry + eoy * thickness + dir_y * length) + ' '
     if is_tab and num_dividers > 0 and not is_divider:  # draw last for divider joints in side walls
         for m in range(1, int(num_dividers) + 1):
+
             Dx = Vx
             Dy = Vy + dir_x * div_spacing * m
             h = 'M {},{} '.format(Dx, Dy)
+
             Dx = rx + eox * thickness + dir_x * length
             Dy = Dy + dir_y * tab_width + diryN * first_vec + first * dir_y
             h += 'L {},{} '.format(Dx, Dy)
+
             Dx = Dx + dirxN * second_vec
             Dy = Dy + diryN * second_vec
             h += 'L {},{} '.format(Dx, Dy)
+
             Dx = Vx
             Dy = Dy - (dir_y * tab_width + diryN * first_vec + first * dir_y)
             h += 'L {},{} '.format(Dx, Dy)
+
             Dx = Dx - dirxN * second_vec
             Dy = Dy - diryN * second_vec
             h += 'L {},{} '.format(Dx, Dy)
+
             drawS(h)
     return s
 
