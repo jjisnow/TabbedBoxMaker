@@ -38,7 +38,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 __version__ = "0.94" ### please report bugs, suggestions etc at https://github.com/paulh-rnd/TabbedBoxMaker ###
 
-import os,sys,inkex,simplestyle,gettext,math
+import gettext
+import math
+import os
+
+import inkex
+import simplestyle
+
 _ = gettext.gettext
 
 linethickness = 1 # default unless overridden by settings
