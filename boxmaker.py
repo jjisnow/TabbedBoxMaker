@@ -66,7 +66,7 @@ def drawS(XYstring):  # Draw lines from a list
 
 # jslee - shamelessly adapted from sample code on below Inkscape wiki page 2015-07-28
 # http://wiki.inkscape.org/wiki/index.php/Generating_objects_from_extensions
-def drawCircle(r, (cx, cy)):
+def drawCircle(r, cx, cy):
     log("putting circle at ({},{})".format(cx, cy))
     style = {'stroke': '#000000', 'stroke-width': str(linethickness), 'fill': 'none'}
     ell_attribs = {'style': simplestyle.formatStyle(style),
@@ -489,8 +489,8 @@ class BoxMaker(inkex.Effect):
                     log("just one row this time, rystart = {}".format(rystart))
                     rh1y = rystart + rail_mount_centre_offset
                     rh2y = rh1y + (row_centre_spacing - rail_mount_centre_offset)
-                    drawCircle(rail_mount_radius, (rhx, rh1y))
-                    drawCircle(rail_mount_radius, (rhx, rh2y))
+                    drawCircle(rail_mount_radius, rhx, rh1y)
+                    drawCircle(rail_mount_radius, rhx, rh2y)
                 else:
                     for n in range(0, rows):
                         log("drawing row {}, rystart = {}".format(n + 1, rystart))
@@ -498,8 +498,8 @@ class BoxMaker(inkex.Effect):
                         # toward each other, ie. toward the centreline of the Schroff row
                         rh1y = rystart + rail_mount_centre_offset
                         rh2y = rh1y + row_centre_spacing - rail_mount_centre_offset
-                        drawCircle(rail_mount_radius, (rhx, rh1y))
-                        drawCircle(rail_mount_radius, (rhx, rh2y))
+                        drawCircle(rail_mount_radius, rhx, rh1y)
+                        drawCircle(rail_mount_radius, rhx, rh2y)
                         rystart += row_centre_spacing + row_spacing + rail_height
 
             # generate and draw the sides of each piece
