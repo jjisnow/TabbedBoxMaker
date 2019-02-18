@@ -47,7 +47,7 @@ import simplestyle
 
 _ = gettext.gettext
 
-linethickness = 1  # default unless overridden by settings
+DEFAULT_LINE_THICKNESS = 1  # default unless overridden by settings
 
 
 def log(text):
@@ -58,7 +58,7 @@ def log(text):
 
 def drawS(XYstring):  # Draw lines from a list
     name = 'part'
-    style = {'stroke': '#000000', 'stroke-width': str(linethickness), 'fill': 'none'}
+    style = {'stroke': '#000000', 'stroke-width': str(DEFAULT_LINE_THICKNESS), 'fill': 'none'}
     drw = {'style': simplestyle.formatStyle(style), inkex.addNS('label', 'inkscape'): name, 'd': XYstring}
     inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), drw)
     return
@@ -68,7 +68,7 @@ def drawS(XYstring):  # Draw lines from a list
 # http://wiki.inkscape.org/wiki/index.php/Generating_objects_from_extensions
 def drawCircle(r, cx, cy):
     log("putting circle at ({},{})".format(cx, cy))
-    style = {'stroke': '#000000', 'stroke-width': str(linethickness), 'fill': 'none'}
+    style = {'stroke': '#000000', 'stroke-width': str(DEFAULT_LINE_THICKNESS), 'fill': 'none'}
     ell_attribs = {'style': simplestyle.formatStyle(style),
                    inkex.addNS('cx', 'sodipodi'): str(cx),
                    inkex.addNS('cy', 'sodipodi'): str(cy),
@@ -277,7 +277,7 @@ class BoxMaker(inkex.Effect):
                                      dest='keydiv', default=3, help='Key dividers into walls/floor')
 
     def effect(self):
-        global parent, nomTab, equalTabs, thickness, correction, divx, divy, hairline, linethickness, keydivwalls, keydivfloor
+        global parent, nomTab, equalTabs, thickness, correction, divx, divy, hairline, DEFAULT_LINE_THICKNESS, keydivwalls, keydivfloor
 
         # Get access to main SVG document element and get its dimensions.
         svg = self.document.getroot()
@@ -301,9 +301,9 @@ class BoxMaker(inkex.Effect):
 
         # Set the line thickness
         if hairline:
-            linethickness = self.unittouu('0.002in')
+            DEFAULT_LINE_THICKNESS = self.unittouu('0.002in')
         else:
-            linethickness = 1
+            DEFAULT_LINE_THICKNESS = 1
 
         if schroff:
             hp = self.options.hp
