@@ -55,7 +55,7 @@ def log(text):
         f.write(text + "\n")
 
 
-def drawS(XYstring):  # Draw lines from a list
+def draw_lines(XYstring):  # Draw lines from a list
     name = 'part'
     style = {'stroke': '#000000', 'stroke-width': str(DEFAULT_LINE_THICKNESS), 'fill': 'none'}
     drw = {'style': simplestyle.formatStyle(style), inkex.addNS('label', 'inkscape'): name, 'd': XYstring}
@@ -108,7 +108,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
     divs = float(divs)
     tabs = (divs - 1) / 2  # tabs for side
 
-    if equalTabs:
+    if equal_tabs:
         gap_width = tab_width = length / divs
     else:
         tab_width = nom_tab
@@ -167,7 +167,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
                 Dy = Dy - diryN * second_vec
                 h += 'L {},{} '.format(Dx, Dy)
 
-                drawS(h)
+                draw_lines(h)
         if n % 2:
             if n == 1 and num_dividers > 0 and is_divider:  # draw slots for dividers to slot into each other
                 for m in range(1, int(num_dividers) + 1):
@@ -192,7 +192,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
                     Dy = Dy - diryN * thickness
                     h += 'L {},{} '.format(Dx, Dy)
 
-                    drawS(h)
+                    draw_lines(h)
 
             Vx = Vx + dir_x * gap_width + dirxN * first_vec + first * dir_x
             Vy = Vy + dir_y * gap_width + diryN * first_vec + first * dir_y
@@ -237,7 +237,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
             Dy = Dy - diryN * second_vec
             h += 'L {},{} '.format(Dx, Dy)
 
-            drawS(h)
+            draw_lines(h)
     return s
 
 
@@ -296,14 +296,14 @@ class BoxMaker(inkex.Effect):
                                      dest='keydiv', default=3, help='Key dividers into walls/floor')
 
     def effect(self):
-        global parent, nom_tab, equalTabs, thickness, correction, divx, divy, hairline, DEFAULT_LINE_THICKNESS, keydivwalls, keydivfloor
+        global parent, nom_tab, equal_tabs, thickness, correction, div_x, div_y, hairline, DEFAULT_LINE_THICKNESS, key_div_walls, key_div_floor
 
         # Get access to main SVG document element and get its dimensions.
         svg = self.document.getroot()
 
         # Get the attributes:
-        widthDoc = self.unittouu(svg.get('width'))
-        heightDoc = self.unittouu(svg.get('height'))
+        width_doc = self.unittouu(svg.get('width'))
+        height_doc = self.unittouu(svg.get('height'))
 
         # Create a new layer.
         layer = inkex.etree.SubElement(svg, 'g')
@@ -353,17 +353,17 @@ class BoxMaker(inkex.Effect):
         z = self.unittouu(str(self.options.height) + unit)
         thickness = self.unittouu(str(self.options.thickness) + unit)
         nom_tab = self.unittouu(str(self.options.tab) + unit)
-        equalTabs = self.options.equal
+        equal_tabs = self.options.equal
         kerf = self.unittouu(str(self.options.kerf) + unit)
         clearance = self.unittouu(str(self.options.clearance) + unit)
         layout = self.options.style
         spacing = self.unittouu(str(self.options.spacing) + unit)
-        boxtype = self.options.boxtype
-        divx = self.options.div_l
-        divy = self.options.div_w
-        keydivwalls = 0 if self.options.keydiv == 3 or self.options.keydiv == 1 else 1
-        keydivfloor = 0 if self.options.keydiv == 3 or self.options.keydiv == 2 else 1
-        divOffset = keydivwalls * thickness
+        box_type = self.options.boxtype
+        div_x = self.options.div_l
+        div_y = self.options.div_w
+        key_div_walls = 0 if self.options.keydiv == 3 or self.options.keydiv == 1 else 1
+        key_div_floor = 0 if self.options.keydiv == 3 or self.options.keydiv == 2 else 1
+        div_offset = key_div_walls * thickness
 
         if inside:  # if inside dimension selected correct values to outside dimension
             x += thickness * 2
@@ -380,7 +380,7 @@ class BoxMaker(inkex.Effect):
         if min(x, y, z) == 0:
             inkex.errormsg('Error: Dimensions must be non zero')
             error = 1
-        if max(x, y, z) > max(widthDoc, heightDoc) * 10:  # crude test
+        if max(x, y, z) > max(width_doc, height_doc) * 10:  # crude test
             inkex.errormsg('Error: Dimensions Too Large')
             error = 1
         if min(x, y, z) < 3 * nom_tab:
@@ -415,7 +415,7 @@ class BoxMaker(inkex.Effect):
         # (sides: a=top, b=right, c=bottom, d=left)
         # pieceType: 1=XY, 2=XZ, 3=ZY
         # note first two pieces in each set are the x-divider template and y-divider template respectively
-        if boxtype == 2:  # One side open (x,y)
+        if box_type == 2:  # One side open (x,y)
             if layout == 1:  # Diagramatic Layout
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1110, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1011, 3],
@@ -431,7 +431,7 @@ class BoxMaker(inkex.Effect):
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1001, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1100, 0b1110, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1011, 3],
                           [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0110, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b0111, 2]]
-        elif boxtype == 3:  # Two sides open (x,y and x,z)
+        elif box_type == 3:  # Two sides open (x,y and x,z)
             if layout == 1:  # Diagramatic Layout
                 pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0010, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1001, 3]]
@@ -444,14 +444,14 @@ class BoxMaker(inkex.Effect):
             elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
                 pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1110, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1001, 3]]
-        elif boxtype == 4:  # Three sides open (x,y, x,z and z,y)
+        elif box_type == 4:  # Three sides open (x,y, x,z and z,y)
             if layout == 2:  # 3 Piece Layout
                 pieces = [[(2, 2, 0, 0), (2, 0, 1, 0), x, z, 0b1111, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0110, 3],
                           [(2, 2, 0, 0), (1, 0, 0, 0), x, y, 0b1100, 0b0011, 1]]
             else:
                 pieces = [[(3, 3, 0, 0), (1, 0, 0, 0), x, z, 0b1110, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0110, 3],
                           [(2, 2, 0, 0), (1, 0, 0, 0), x, y, 0b1100, 0b0011, 1]]
-        elif boxtype == 5:  # Opposite ends open (x,y)
+        elif box_type == 5:  # Opposite ends open (x,y)
             if layout == 1:  # Diagramatic Layout
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1010, 3],
                           [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1010, 3]]
@@ -463,7 +463,7 @@ class BoxMaker(inkex.Effect):
             elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1011, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0111, 0b1010, 3],
                           [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1110, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1101, 0b1010, 3]]
-        elif boxtype == 6:  # 2 panels jointed (x,y and z,y joined along y)
+        elif box_type == 6:  # 2 panels jointed (x,y and z,y joined along y)
             pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), x, y, 0b1011, 0b0100, 1], [(2, 1, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0001, 3]]
         else:  # Fully enclosed
             if layout == 1:  # Diagramatic Layout
@@ -495,19 +495,19 @@ class BoxMaker(inkex.Effect):
             c = tabs >> 1 & 1
             d = tabs & 1  # extract tab status for each side
             tabbed = piece[5]
-            atabs = tabbed >> 3 & 1
-            btabs = tabbed >> 2 & 1
-            ctabs = tabbed >> 1 & 1
-            dtabs = tabbed & 1  # extract tabbed flag for each side
-            xspacing = (x - thickness) / (divy + 1)
-            yspacing = (y - thickness) / (divx + 1)
-            xholes = 1 if piece[6] < 3 else 0
-            yholes = 1 if piece[6] != 2 else 0
+            a_tabs = tabbed >> 3 & 1
+            b_tabs = tabbed >> 2 & 1
+            c_tabs = tabbed >> 1 & 1
+            d_tabs = tabbed & 1  # extract tabbed flag for each side
+            x_spacing = (x - thickness) / (div_y + 1)
+            y_spacing = (y - thickness) / (div_x + 1)
+            x_holes = 1 if piece[6] < 3 else 0
+            y_holes = 1 if piece[6] != 2 else 0
             wall = 1 if piece[6] > 1 else 0
             floor = 1 if piece[6] == 1 else 0
-            railholes = 1 if piece[6] == 3 else 0
+            rail_holes = 1 if piece[6] == 3 else 0
 
-            if schroff and railholes:
+            if schroff and rail_holes:
                 log("rail holes enabled on piece {} at ({}, {})".format(idx, x + thickness, y + thickness))
                 log("abcd = ({},{},{},{})".format(a, b, c, d))
                 log("dxdy = ({},{})".format(dx, dy))
@@ -538,42 +538,42 @@ class BoxMaker(inkex.Effect):
                         rystart += row_centre_spacing + row_spacing + rail_height
 
             # generate and draw the sides of each piece
-            drawS(side(x, y, d, a, -b, a, atabs * (-thickness if a else thickness), dx, 1, 0, a, 0, (keydivfloor | wall) * (keydivwalls | floor) * divx * yholes * atabs, yspacing, divOffset))  # side a
-            drawS(side(x + dx, y, -b, a, -b, -c, btabs * (thickness if b else -thickness), dy, 0, 1, b, 0, (keydivfloor | wall) * (keydivwalls | floor) * divy * xholes * btabs, xspacing, divOffset))  # side b
-            if atabs:
-                drawS(side(x + dx, y + dy, -b, -c, d, -c, ctabs * (thickness if c else -thickness), dx, -1, 0, c, 0, 0, 0, divOffset))  # side c
+            draw_lines(side(x, y, d, a, -b, a, a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * a_tabs, y_spacing, div_offset))  # side a
+            draw_lines(side(x + dx, y, -b, a, -b, -c, b_tabs * (thickness if b else -thickness), dy, 0, 1, b, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * b_tabs, x_spacing, div_offset))  # side b
+            if a_tabs:
+                draw_lines(side(x + dx, y + dy, -b, -c, d, -c, c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 0, 0, 0, div_offset))  # side c
             else:
-                drawS(side(x + dx, y + dy, -b, -c, d, -c, ctabs * (thickness if c else -thickness), dx, -1, 0, c, 0, (keydivfloor | wall) * (keydivwalls | floor) * divx * yholes * ctabs, yspacing, divOffset))  # side c
-            if btabs:
-                drawS(side(x, y + dy, d, -c, d, a, dtabs * (-thickness if d else thickness), dy, 0, -1, d, 0, 0, 0, divOffset))  # side d
+                draw_lines(side(x + dx, y + dy, -b, -c, d, -c, c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * c_tabs, y_spacing, div_offset))  # side c
+            if b_tabs:
+                draw_lines(side(x, y + dy, d, -c, d, a, d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 0, 0, 0, div_offset))  # side d
             else:
-                drawS(side(x, y + dy, d, -c, d, a, dtabs * (-thickness if d else thickness), dy, 0, -1, d, 0, (keydivfloor | wall) * (keydivwalls | floor) * divy * xholes * dtabs, xspacing, divOffset))  # side d
+                draw_lines(side(x, y + dy, d, -c, d, a, d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * d_tabs, x_spacing, div_offset))  # side d
 
             if idx == 0:
-                if not keydivwalls:
+                if not key_div_walls:
                     a = 1
                     b = 1
                     c = 1
                     d = 1
-                    atabs = 0
-                    btabs = 0
-                    ctabs = 0
-                    dtabs = 0
+                    a_tabs = 0
+                    b_tabs = 0
+                    c_tabs = 0
+                    d_tabs = 0
                 y = 4 * spacing + 1 * y + 2 * z  # root y co-ord for piece
-                for n in range(0, divx):  # generate x dividers
+                for n in range(0, div_x):  # generate x dividers
                     x = n * (spacing + x)  # root x co-ord for piece
-                    drawS(side(x, y, d, a, -b, a, keydivfloor * atabs * (-thickness if a else thickness), dx, 1, 0, a, 1, 0, 0, divOffset))  # side a
-                    drawS(side(x + dx, y, -b, a, -b, -c, keydivwalls * btabs * (thickness if keydivwalls * b else -thickness), dy, 0, 1, b, 1, divy * xholes, xspacing, divOffset))  # side b
-                    drawS(side(x + dx, y + dy, -b, -c, d, -c, keydivfloor * ctabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, divOffset))  # side c
-                    drawS(side(x, y + dy, d, -c, d, a, keydivwalls * dtabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, divOffset))  # side d
+                    draw_lines(side(x, y, d, a, -b, a, key_div_floor * a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 1, 0, 0, div_offset))  # side a
+                    draw_lines(side(x + dx, y, -b, a, -b, -c, key_div_walls * b_tabs * (thickness if key_div_walls * b else -thickness), dy, 0, 1, b, 1, div_y * x_holes, x_spacing, div_offset))  # side b
+                    draw_lines(side(x + dx, y + dy, -b, -c, d, -c, key_div_floor * c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, div_offset))  # side c
+                    draw_lines(side(x, y + dy, d, -c, d, a, key_div_walls * d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, div_offset))  # side d
             elif idx == 1:
                 y = 5 * spacing + 1 * y + 3 * z  # root y co-ord for piece
-                for n in range(0, divy):  # generate y dividers
+                for n in range(0, div_y):  # generate y dividers
                     x = n * (spacing + z)  # root x co-ord for piece
-                    drawS(side(x, y, d, a, -b, a, keydivwalls * atabs * (-thickness if a else thickness), dx, 1, 0, a, 1, divx * yholes, yspacing, thickness))  # side a
-                    drawS(side(x + dx, y, -b, a, -b, -c, keydivfloor * btabs * (thickness if b else -thickness), dy, 0, 1, b, 1, 0, 0, thickness))  # side b
-                    drawS(side(x + dx, y + dy, -b, -c, d, -c, keydivwalls * ctabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, thickness))  # side c
-                    drawS(side(x, y + dy, d, -c, d, a, keydivfloor * dtabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, thickness))  # side d
+                    draw_lines(side(x, y, d, a, -b, a, key_div_walls * a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 1, div_x * y_holes, y_spacing, thickness))  # side a
+                    draw_lines(side(x + dx, y, -b, a, -b, -c, key_div_floor * b_tabs * (thickness if b else -thickness), dy, 0, 1, b, 1, 0, 0, thickness))  # side b
+                    draw_lines(side(x + dx, y + dy, -b, -c, d, -c, key_div_walls * c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, thickness))  # side c
+                    draw_lines(side(x, y + dy, d, -c, d, a, key_div_floor * d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, thickness))  # side d
 
 
 # Create effect instance and apply it.
