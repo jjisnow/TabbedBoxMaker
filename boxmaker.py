@@ -128,7 +128,7 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
     dirxN = 0 if dir_x else 1  # used to select operation on x or y
     diryN = 0 if dir_y else 1
     (Vx, Vy) = (rx + sox * thickness, ry + soy * thickness)
-    s = 'M ' + str(Vx) + ',' + str(Vy) + ' '
+    s = 'M {},{} '.format(Vx, Vy)
 
     if dirxN:
         Vy = ry  # set correct line start
@@ -149,52 +149,52 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
                 Dy = Vy + dir_x * div_spacing * m
                 if n == 1:
                     Dx += sox * thickness
-                h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
+                h = 'M {},{} '.format(Dx, Dy)
                 Dx = Dx + dir_x * w + dirxN * first_vec + first * dir_x
                 Dy = Dy + dir_y * w + diryN * first_vec + first * dir_y
-                h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                h += 'L {},{} '.format(Dx, Dy)
                 Dx = Dx + dirxN * second_vec
                 Dy = Dy + diryN * second_vec
-                h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                h += 'L {},{} '.format(Dx, Dy)
                 Dx = Dx - (dir_x * w + dirxN * first_vec + first * dir_x)
                 Dy = Dy - (dir_y * w + diryN * first_vec + first * dir_y)
-                h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                h += 'L {},{} '.format(Dx, Dy)
                 Dx = Dx - dirxN * second_vec
                 Dy = Dy - diryN * second_vec
-                h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                h += 'L {},{} '.format(Dx, Dy)
                 drawS(h)
         if n % 2:
             if n == 1 and num_dividers > 0 and is_divider:  # draw slots for dividers to slot into each other
                 for m in range(1, int(num_dividers) + 1):
                     Dx = Vx + -dir_y * (div_spacing * m + div_offset)
                     Dy = Vy + dir_x * (div_spacing * m - div_offset)
-                    h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
+                    h = 'M {},{} '.format(Dx, Dy)
                     Dx = Dx + dir_x * (first + length / 2)
                     Dy = Dy + dir_y * (first + length / 2)
-                    h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                    h += 'L {},{} '.format(Dx, Dy)
                     Dx = Dx + dirxN * thickness
                     Dy = Dy + diryN * thickness
-                    h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                    h += 'L {},{} '.format(Dx, Dy)
                     Dx = Dx - dir_x * (first + length / 2)
                     Dy = Dy - dir_y * (first + length / 2)
-                    h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                    h += 'L {},{} '.format(Dx, Dy)
                     Dx = Dx - dirxN * thickness
                     Dy = Dy - diryN * thickness
-                    h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+                    h += 'L {},{} '.format(Dx, Dy)
                     drawS(h)
             Vx = Vx + dir_x * gap_width + dirxN * first_vec + first * dir_x
             Vy = Vy + dir_y * gap_width + diryN * first_vec + first * dir_y
-            s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
+            s += 'L {},{} '.format(Vx, Vy)
             Vx = Vx + dirxN * second_vec
             Vy = Vy + diryN * second_vec
-            s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
+            s += 'L {},{} '.format(Vx, Vy)
         else:
             Vx = Vx + dir_x * tab_width + dirxN * first_vec
             Vy = Vy + dir_y * tab_width + diryN * first_vec
-            s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
+            s += 'L {},{} '.format(Vx, Vy)
             Vx = Vx + dirxN * second_vec
             Vy = Vy + diryN * second_vec
-            s += 'L ' + str(Vx) + ',' + str(Vy) + ' '
+            s += 'L {},{} '.format(Vx, Vy)
         (second_vec, first_vec) = (-second_vec, -first_vec)  # swap tab direction
         first = 0
 
@@ -204,19 +204,19 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
         for m in range(1, int(num_dividers) + 1):
             Dx = Vx
             Dy = Vy + dir_x * div_spacing * m
-            h = 'M ' + str(Dx) + ',' + str(Dy) + ' '
+            h = 'M {},{} '.format(Dx, Dy)
             Dx = rx + eox * thickness + dir_x * length
             Dy = Dy + dir_y * tab_width + diryN * first_vec + first * dir_y
-            h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+            h += 'L {},{} '.format(Dx, Dy)
             Dx = Dx + dirxN * second_vec
             Dy = Dy + diryN * second_vec
-            h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+            h += 'L {},{} '.format(Dx, Dy)
             Dx = Vx
             Dy = Dy - (dir_y * tab_width + diryN * first_vec + first * dir_y)
-            h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+            h += 'L {},{} '.format(Dx, Dy)
             Dx = Dx - dirxN * second_vec
             Dy = Dy - diryN * second_vec
-            h += 'L ' + str(Dx) + ',' + str(Dy) + ' '
+            h += 'L {},{} '.format(Dx, Dy)
             drawS(h)
     return s
 
