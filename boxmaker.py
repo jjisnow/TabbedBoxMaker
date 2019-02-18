@@ -1,6 +1,6 @@
 #! /usr/bin/env python -t
-'''
-Generates Inkscape SVG file containing box components needed to 
+"""
+Generates Inkscape SVG file containing box components needed to
 laser cut a tabbed construction box taking kerf and clearance into account
 
 Copyright (C) 2011 elliot white
@@ -10,17 +10,17 @@ Changelog:
  - Ability to generate 6, 5, 4, 3 or 2-panel cutouts
  - Ability to also generate evenly spaced dividers within the box
    including tabbed joints to box sides and slots to slot into each other
-   
+
 23/06/2015 by Paul Hutchison:
  - Updated for Inkscape's 0.91 breaking change (unittouu)
- 
+
 v0.93 - 15/8/2016 by Paul Hutchison:
  - Added Hairline option and fixed open box height bug
- 
+
 v0.94 - 05/01/2017 by Paul Hutchison:
  - Added option for keying dividers into walls/floor/none
-   
-This program is ugly software: you can clean it up yourself and/or mock it 
+
+This program is ugly software: you can clean it up yourself and/or mock it
 under the unpublished terms of common civility.
 
 This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 __version__ = "0.94"  ### please report bugs, suggestions etc at https://github.com/paulh-rnd/TabbedBoxMaker ###
 
 import gettext
@@ -317,11 +317,11 @@ class BoxMaker(inkex.Effect):
             rail_mount_centre_offset = self.unittouu(str(self.options.rail_mount_centre_offset) + unit)
             rail_mount_radius = self.unittouu(str(2.5) + unit)
 
-        ## minimally different behaviour for schroffmaker.inx vs. boxmaker.inx
-        ## essentially schroffmaker.inx is just an alternate interface with different
-        ## default settings, some options removed, and a tiny amount of extra logic
+        # minimally different behaviour for schroffmaker.inx vs. boxmaker.inx
+        # essentially schroffmaker.inx is just an alternate interface with different
+        # default settings, some options removed, and a tiny amount of extra logic
         if schroff:
-            ## schroffmaker.inx
+            # schroffmaker.inx
             X = self.unittouu(str(self.options.hp * 5.08) + unit)
             # 122.5mm vertical distance between mounting hole centres of 3U Schroff panels
             row_height = rows * (row_centre_spacing + rail_height)
@@ -329,7 +329,7 @@ class BoxMaker(inkex.Effect):
             row_spacing_total = (rows - 1) * row_spacing
             Y = row_height + row_spacing_total
         else:
-            ## boxmaker.inx
+            # boxmaker.inx
             X = self.unittouu(str(self.options.length) + unit)
             Y = self.unittouu(str(self.options.width) + unit)
 
