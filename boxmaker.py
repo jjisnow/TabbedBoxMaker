@@ -244,7 +244,9 @@ def side(rx, ry, sox, soy, eox, eoy, tab_vec, length, dir_x, dir_y, is_tab, is_d
 class BoxMaker(inkex.Effect):
     def __init__(self):
         # Call the base class constructor.
-        super(BoxMaker, self).__init__(self)
+        # We are not using super because as of Inkscape 0.92 inkex.Effect is still an
+        #   Old-Style python class that doesn't inherit from `object`
+        inkex.Effect.__init__(self)
         # Define options
         self.OptionParser.add_option('--schroff', action='store', type='int',
                                      dest='schroff', default=0, help='Enable Schroff mode')
