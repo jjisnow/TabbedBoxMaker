@@ -55,10 +55,10 @@ def log(text):
         f.write(text + "\n")
 
 
-def draw_lines(XYstring):  # Draw lines from a list
+def draw_lines(xy_string):  # Draw lines from a list
     name = 'part'
     style = {'stroke': '#000000', 'stroke-width': str(DEFAULT_LINE_THICKNESS), 'fill': 'none'}
-    drw = {'style': simplestyle.formatStyle(style), inkex.addNS('label', 'inkscape'): name, 'd': XYstring}
+    drw = {'style': simplestyle.formatStyle(style), inkex.addNS('label', 'inkscape'): name, 'd': xy_string}
     inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), drw)
     return
 
@@ -396,7 +396,7 @@ class BoxMaker(inkex.Effect):
             inkex.errormsg('Error: Material too thick')
             error = 1
         if correction > min(x, y, z) / 3:  # crude test
-            inkex.errormsg('Error: Kerf/Clearence too large')
+            inkex.errormsg('Error: Kerf/Clearance too large')
             error = 1
         if spacing > max(x, y, z) * 10:  # crude test
             inkex.errormsg('Error: Spacing too large')
@@ -416,7 +416,7 @@ class BoxMaker(inkex.Effect):
         # pieceType: 1=XY, 2=XZ, 3=ZY
         # note first two pieces in each set are the x-divider template and y-divider template respectively
         if box_type == 2:  # One side open (x,y)
-            if layout == 1:  # Diagramatic Layout
+            if layout == 1:  # Diagrammatic Layout
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1110, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1011, 3],
                           [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0000, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2]]
@@ -427,12 +427,12 @@ class BoxMaker(inkex.Effect):
                 pieces = [[(5, 2, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b1101, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b0101, 0b1110, 3],
                           [(4, 2, 0, 1), (1, 0, 0, 0), z, y, 0b0101, 0b1011, 3], [(2, 1, 0, 0), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1],
                           [(6, 3, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b0111, 2]]
-            elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
+            elif layout == 4:  # Diagrammatic Layout with Alternate Tab Arrangement
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1001, 0b1101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1100, 0b1110, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1011, 3],
                           [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0110, 0b0000, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b0111, 2]]
         elif box_type == 3:  # Two sides open (x,y and x,z)
-            if layout == 1:  # Diagramatic Layout
+            if layout == 1:  # Diagrammatic Layout
                 pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0010, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1001, 3]]
             elif layout == 2:  # 3 Piece Layout
@@ -441,7 +441,7 @@ class BoxMaker(inkex.Effect):
             elif layout == 3:  # Inline(compact) Layout
                 pieces = [[(2, 2, 0, 2), (1, 0, 0, 0), x, z, 0b1010, 0b0111, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b1100, 3],
                           [(2, 1, 0, 0), (1, 0, 0, 0), x, y, 0b0010, 0b1101, 1], [(4, 2, 0, 1), (1, 0, 0, 0), z, y, 0b1111, 0b1001, 3]]
-            elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
+            elif layout == 4:  # Diagrammatic Layout with Alternate Tab Arrangement
                 pieces = [[(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b0111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1100, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1110, 0b1101, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1001, 3]]
         elif box_type == 4:  # Three sides open (x,y, x,z and z,y)
@@ -452,7 +452,7 @@ class BoxMaker(inkex.Effect):
                 pieces = [[(3, 3, 0, 0), (1, 0, 0, 0), x, z, 0b1110, 0b1001, 2], [(1, 0, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0110, 3],
                           [(2, 2, 0, 0), (1, 0, 0, 0), x, y, 0b1100, 0b0011, 1]]
         elif box_type == 5:  # Opposite ends open (x,y)
-            if layout == 1:  # Diagramatic Layout
+            if layout == 1:  # Diagrammatic Layout
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1010, 3],
                           [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1010, 3]]
             elif layout == 2:  # 2 Piece Layout
@@ -460,13 +460,13 @@ class BoxMaker(inkex.Effect):
             elif layout == 3:  # Inline(compact) Layout
                 pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b1010, 3],
                           [(2, 1, 0, 0), (1, 0, 0, 0), x, z, 0b1010, 0b0101, 2], [(4, 2, 0, 1), (2, 0, 0, 0), z, y, 0b1111, 0b1010, 3]]
-            elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
+            elif layout == 4:  # Diagrammatic Layout with Alternate Tab Arrangement
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1011, 0b0101, 2], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0111, 0b1010, 3],
                           [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1110, 0b0101, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1101, 0b1010, 3]]
         elif box_type == 6:  # 2 panels jointed (x,y and z,y joined along y)
             pieces = [[(1, 0, 0, 0), (1, 0, 0, 0), x, y, 0b1011, 0b0100, 1], [(2, 1, 0, 0), (1, 0, 0, 0), z, y, 0b1111, 0b0001, 3]]
         else:  # Fully enclosed
-            if layout == 1:  # Diagramatic Layout
+            if layout == 1:  # Diagrammatic Layout
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b1111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1111, 0b1111, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b1111, 0b1111, 3],
                           [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0000, 0b1111, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1010, 0b1111, 2]]
@@ -477,7 +477,7 @@ class BoxMaker(inkex.Effect):
                 pieces = [[(5, 2, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b1111, 2], [(3, 2, 0, 0), (1, 0, 0, 0), z, y, 0b0101, 0b1111, 3],
                           [(6, 3, 0, 2), (1, 0, 0, 0), x, z, 0b1111, 0b1111, 2], [(4, 2, 0, 1), (1, 0, 0, 0), z, y, 0b0101, 0b1111, 3],
                           [(2, 1, 0, 0), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1], [(1, 0, 0, 0), (1, 0, 0, 0), x, y, 0b0000, 0b1111, 1]]
-            elif layout == 4:  # Diagramatic Layout with Alternate Tab Arrangement
+            elif layout == 4:  # Diagrammatic Layout with Alternate Tab Arrangement
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1001, 0b1111, 2], [(1, 0, 0, 0), (2, 0, 0, 1), z, y, 0b1100, 0b1111, 3],
                           [(2, 0, 0, 1), (2, 0, 0, 1), x, y, 0b1100, 0b1111, 1], [(3, 1, 0, 1), (2, 0, 0, 1), z, y, 0b0110, 0b1111, 3],
                           [(4, 1, 0, 2), (2, 0, 0, 1), x, y, 0b0110, 0b1111, 1], [(2, 0, 0, 1), (1, 0, 0, 0), x, z, 0b1100, 0b1111, 2]]
@@ -511,31 +511,31 @@ class BoxMaker(inkex.Effect):
                 log("rail holes enabled on piece {} at ({}, {})".format(idx, x + thickness, y + thickness))
                 log("abcd = ({},{},{},{})".format(a, b, c, d))
                 log("dxdy = ({},{})".format(dx, dy))
-                rhxoffset = rail_mount_depth + thickness
+                rhx_offset = rail_mount_depth + thickness
                 if idx == 1:
-                    rhx = x + rhxoffset
+                    rhx = x + rhx_offset
                 elif idx == 3:
-                    rhx = x - rhxoffset + dx
+                    rhx = x - rhx_offset + dx
                 else:
                     rhx = 0
-                log("rhxoffset = {}, rhx= {}".format(rhxoffset, rhx))
-                rystart = y + (rail_height / 2) + thickness
+                log("rhx_offset = {}, rhx= {}".format(rhx_offset, rhx))
+                ry_start = y + (rail_height / 2) + thickness
                 if rows == 1:
-                    log("just one row this time, rystart = {}".format(rystart))
-                    rh1y = rystart + rail_mount_centre_offset
+                    log("just one row this time, ry_start = {}".format(ry_start))
+                    rh1y = ry_start + rail_mount_centre_offset
                     rh2y = rh1y + (row_centre_spacing - rail_mount_centre_offset)
                     draw_circle(rail_mount_radius, rhx, rh1y)
                     draw_circle(rail_mount_radius, rhx, rh2y)
                 else:
                     for n in range(0, rows):
-                        log("drawing row {}, rystart = {}".format(n + 1, rystart))
+                        log("drawing row {}, ry_start = {}".format(n + 1, ry_start))
                         # if holes are offset (eg. Vector T-strut rails), they should be offset
                         # toward each other, ie. toward the centreline of the Schroff row
-                        rh1y = rystart + rail_mount_centre_offset
+                        rh1y = ry_start + rail_mount_centre_offset
                         rh2y = rh1y + row_centre_spacing - rail_mount_centre_offset
                         draw_circle(rail_mount_radius, rhx, rh1y)
                         draw_circle(rail_mount_radius, rhx, rh2y)
-                        rystart += row_centre_spacing + row_spacing + rail_height
+                        ry_start += row_centre_spacing + row_spacing + rail_height
 
             # generate and draw the sides of each piece
             draw_lines(side(x, y, d, a, -b, a, a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * a_tabs, y_spacing, div_offset))  # side a
