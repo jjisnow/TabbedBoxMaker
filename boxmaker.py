@@ -487,8 +487,8 @@ class BoxMaker(inkex.Effect):
         for idx, piece in enumerate(pieces):  # generate and draw each piece of the box
             (xs, xx, xy, xz) = piece[0]
             (ys, yx, yy, yz) = piece[1]
-            x = xs * spacing + xx * x + xy * y + xz * z  # root x co-ord for piece
-            y = ys * spacing + yx * x + yy * y + yz * z  # root y co-ord for piece
+            x_ = xs * spacing + xx * x + xy * y + xz * z  # root x co-ord for piece
+            y_ = ys * spacing + yx * x + yy * y + yz * z  # root y co-ord for piece
             dx = piece[2]
             dy = piece[3]
             tabs = piece[4]
@@ -510,18 +510,18 @@ class BoxMaker(inkex.Effect):
             rail_holes = 1 if piece[6] == 3 else 0
 
             if schroff and rail_holes:
-                log("rail holes enabled on piece {} at ({}, {})".format(idx, x + thickness, y + thickness))
+                log("rail holes enabled on piece {} at ({}, {})".format(idx, x_ + thickness, y_ + thickness))
                 log("abcd = ({},{},{},{})".format(a, b, c, d))
                 log("dxdy = ({},{})".format(dx, dy))
                 rhx_offset = rail_mount_depth + thickness
                 if idx == 1:
-                    rhx = x + rhx_offset
+                    rhx = x_ + rhx_offset
                 elif idx == 3:
-                    rhx = x - rhx_offset + dx
+                    rhx = x_ - rhx_offset + dx
                 else:
                     rhx = 0
                 log("rhx_offset = {}, rhx= {}".format(rhx_offset, rhx))
-                ry_start = y + (rail_height / 2) + thickness
+                ry_start = y_ + (rail_height / 2) + thickness
                 if rows == 1:
                     log("just one row this time, ry_start = {}".format(ry_start))
                     rh1y = ry_start + rail_mount_centre_offset
@@ -540,16 +540,16 @@ class BoxMaker(inkex.Effect):
                         ry_start += row_centre_spacing + row_spacing + rail_height
 
             # generate and draw the sides of each piece
-            draw_lines(side(x, y, d, a, -b, a, a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * a_tabs, y_spacing, div_offset))  # side a
-            draw_lines(side(x + dx, y, -b, a, -b, -c, b_tabs * (thickness if b else -thickness), dy, 0, 1, b, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * b_tabs, x_spacing, div_offset))  # side b
+            draw_lines(side(x_, y_, d, a, -b, a, a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * a_tabs, y_spacing, div_offset))  # side a
+            draw_lines(side(x_ + dx, y_, -b, a, -b, -c, b_tabs * (thickness if b else -thickness), dy, 0, 1, b, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * b_tabs, x_spacing, div_offset))  # side b
             if a_tabs:
-                draw_lines(side(x + dx, y + dy, -b, -c, d, -c, c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 0, 0, 0, div_offset))  # side c
+                draw_lines(side(x_ + dx, y_ + dy, -b, -c, d, -c, c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 0, 0, 0, div_offset))  # side c
             else:
-                draw_lines(side(x + dx, y + dy, -b, -c, d, -c, c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * c_tabs, y_spacing, div_offset))  # side c
+                draw_lines(side(x_ + dx, y_ + dy, -b, -c, d, -c, c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * c_tabs, y_spacing, div_offset))  # side c
             if b_tabs:
-                draw_lines(side(x, y + dy, d, -c, d, a, d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 0, 0, 0, div_offset))  # side d
+                draw_lines(side(x_, y_ + dy, d, -c, d, a, d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 0, 0, 0, div_offset))  # side d
             else:
-                draw_lines(side(x, y + dy, d, -c, d, a, d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * d_tabs, x_spacing, div_offset))  # side d
+                draw_lines(side(x_, y_ + dy, d, -c, d, a, d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 0, (key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * d_tabs, x_spacing, div_offset))  # side d
 
             if idx == 0:
                 if not key_div_walls:
@@ -561,21 +561,21 @@ class BoxMaker(inkex.Effect):
                     b_tabs = 0
                     c_tabs = 0
                     d_tabs = 0
-                y = 4 * spacing + 1 * y + 2 * z  # root y co-ord for piece
+                y_ = 4 * spacing + 1 * y + 2 * z  # root y co-ord for piece
                 for n in range(0, div_x):  # generate x dividers
-                    x = n * (spacing + x)  # root x co-ord for piece
-                    draw_lines(side(x, y, d, a, -b, a, key_div_floor * a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 1, 0, 0, div_offset))  # side a
-                    draw_lines(side(x + dx, y, -b, a, -b, -c, key_div_walls * b_tabs * (thickness if key_div_walls * b else -thickness), dy, 0, 1, b, 1, div_y * x_holes, x_spacing, div_offset))  # side b
-                    draw_lines(side(x + dx, y + dy, -b, -c, d, -c, key_div_floor * c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, div_offset))  # side c
-                    draw_lines(side(x, y + dy, d, -c, d, a, key_div_walls * d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, div_offset))  # side d
+                    x_ = n * (spacing + x)  # root x co-ord for piece
+                    draw_lines(side(x_, y_, d, a, -b, a, key_div_floor * a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 1, 0, 0, div_offset))  # side a
+                    draw_lines(side(x_ + dx, y_, -b, a, -b, -c, key_div_walls * b_tabs * (thickness if key_div_walls * b else -thickness), dy, 0, 1, b, 1, div_y * x_holes, x_spacing, div_offset))  # side b
+                    draw_lines(side(x_ + dx, y_ + dy, -b, -c, d, -c, key_div_floor * c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, div_offset))  # side c
+                    draw_lines(side(x_, y_ + dy, d, -c, d, a, key_div_walls * d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, div_offset))  # side d
             elif idx == 1:
-                y = 5 * spacing + 1 * y + 3 * z  # root y co-ord for piece
+                y_ = 5 * spacing + 1 * y + 3 * z  # root y co-ord for piece
                 for n in range(0, div_y):  # generate y dividers
-                    x = n * (spacing + z)  # root x co-ord for piece
-                    draw_lines(side(x, y, d, a, -b, a, key_div_walls * a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 1, div_x * y_holes, y_spacing, thickness))  # side a
-                    draw_lines(side(x + dx, y, -b, a, -b, -c, key_div_floor * b_tabs * (thickness if b else -thickness), dy, 0, 1, b, 1, 0, 0, thickness))  # side b
-                    draw_lines(side(x + dx, y + dy, -b, -c, d, -c, key_div_walls * c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, thickness))  # side c
-                    draw_lines(side(x, y + dy, d, -c, d, a, key_div_floor * d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, thickness))  # side d
+                    x_ = n * (spacing + z)  # root x co-ord for piece
+                    draw_lines(side(x_, y_, d, a, -b, a, key_div_walls * a_tabs * (-thickness if a else thickness), dx, 1, 0, a, 1, div_x * y_holes, y_spacing, thickness))  # side a
+                    draw_lines(side(x_ + dx, y_, -b, a, -b, -c, key_div_floor * b_tabs * (thickness if b else -thickness), dy, 0, 1, b, 1, 0, 0, thickness))  # side b
+                    draw_lines(side(x_ + dx, y_ + dy, -b, -c, d, -c, key_div_walls * c_tabs * (thickness if c else -thickness), dx, -1, 0, c, 1, 0, 0, thickness))  # side c
+                    draw_lines(side(x_, y_ + dy, d, -c, d, a, key_div_floor * d_tabs * (-thickness if d else thickness), dy, 0, -1, d, 1, 0, 0, thickness))  # side d
 
 
 # Create effect instance and apply it.
