@@ -1,9 +1,10 @@
 # BoxMaker: A free tool for creating boxes using tabbed construction
 
-_version 0.94 - 5 Jan 2017_
+_version 0.95 - 19 Feb 2019_
 
-Original box maker by Elliot White - http://www.twot.eu/111000/111000.html
-Heavily modified by Paul Hutchison
+Original box maker by Elliot White - http://www.twot.eu/111000/111000.html  
+Heavily modified by Paul Hutchison  
+Updated by Ryan Jarvis  
 
 ## About
  This tool is designed to simplify and speed up process of making practical boxes using a laser cutter (though it can be used with any CNC cutter) to prepare the pieces.
@@ -11,11 +12,11 @@ Heavily modified by Paul Hutchison
  The tool works by generating a drawing of the pieces of the box with the tab and hole size corrected to account for the kerf (width of cut), these pieces are composed of sides, each side being a discreet object, to move a piece in the drawing the edges need to be grouped together.
 
 ## Release Notes
- So far no serious bugs( i.e causing runtime errors ) have been found. The program works with python versions 2.6.5, 2.6.7 and 2.7.2, other version have not yet been tried except python 2.5.1 which fails with a syntax error.
+ So far no serious bugs( i.e causing runtime errors ) have been found. The program works with python versions 2.7+ and 3.2+
 
-This version has been tried on windows XP, windows 7, Ubuntu and Mac OS X with no serious problems ( the live preview works most of the time but can be flaky).
+This version has been tried on windows XP, windows 7, Ubuntu and Mac OS X with no serious problems (the live preview works most of the time but can be flaky).
 
- Only crude input checking has been implemented in the program but as the only output is a drawing the worst that can happen is a messed up picture ( control-Z cures that problem ).
+ Only crude input checking has been implemented in the program but as the only output is a drawing the worst that can happen is a messed up picture (control-Z cures that problem).
  
 ## Donate
  Any donations will be gratefully received and help me spend more time on laser cutter tools like this:
@@ -23,7 +24,7 @@ This version has been tried on windows XP, windows 7, Ubuntu and Mac OS X with n
  [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/SparkItUp)
 
 ## To do
-* Tidy the code - it is rough and unpythonic.  Needs some work by a master Python guru.
+* Tidy the code - it is rough and unpythonic.  Needs some work by a master Python guru.  IN PROGRESS
 * Improve program documentation. Improve input checking to restrict values to correct solutions.
 * [Schroff] Maybe replace the somewhat obscure collection of Schroff rail input data with a dropdown box listing well-documented rail types (Vector, Z-rails, whatever it is that Elby sells, others?)
 * [Schroff] Add support for multiple mounting holes per rail where possible (this would definitely make the previous todo item worthwhile)
@@ -42,10 +43,7 @@ In order of appearance:
 
 * Minimum/Preferred Tab Width - the size of the tabs used to hold the pieces together
 
-* Tab Width: Fixed/Proportional - for fixed the tab width is the value given in the Tab
-                                 Width, for proportional the side of a piece is divided 
-                                 equally into tabs and 'spaces' with the tabs size 
-                                 greater or equal to the Tab Width setting
+* Tab Width: Fixed/Proportional - for fixed the tab width is the value given in the Tab Width, for proportional the side of a piece is divided equally into tabs and 'spaces' with the tabs size greater or equal to the Tab Width setting
 
 * Material Thickness - as it says
  
@@ -55,11 +53,7 @@ In order of appearance:
 * Clearance - this value is subtracted from the kerf in cases where you deliberately want
              slightly slacker joints ( usually zero )
 
-* Layout/Style - { This is where additions/changes will most likely occur, also having a
-                problem with live preview: it is best to turn preview off when changing this 
-                setting }
-                this setting determines both the type of drawing produced and the way tabs
-                are used on the sides of pieces.
+* Layout/Style - { This is where additions/changes will most likely occur, also having a problem with live preview: it is best to turn preview off when changing this setting } this setting determines both the type of drawing produced and the way tabs are used on the sides of pieces.
 
 * Box style - this allows you to choose how many jointed sides you want. Options are:
     * Fully enclosed (6 sides)
@@ -70,21 +64,17 @@ In order of appearance:
     * Two panels only (LxW and LxH) - two panels with a single joint down the Length axis
  
 
-			
-* Dividers (Length axis) - use this to create additional LxH panels that mount inside the box 
-						 along the length axis and have finger joints into the side panels
-						 and slots for Width dividers to slot into
-				
-* Dividers (Width axis) - use this to create additional WxH panels that mount inside the box 
-						 along the width axis and have finger joints into the side panels
-						 and slots for Length dividers to slot into
-						 
+            
+* Dividers (Length axis) - use this to create additional LxH panels that mount inside the box along the length axis and have finger joints into the side panels and slots for Width dividers to slot into
+                
+* Dividers (Width axis) - use this to create additional WxH panels that mount inside the box along the width axis and have finger joints into the side panels and slots for Length dividers to slot into
+                         
 * Key the dividers into - this allows you to choose if/how the dividers are keyed into the sides of the box. Options are:
-	* None - no keying, dividers will be free to slide in and out
-	* Walls - dividers will only be keyed into the side walls of the box
-	* Floor/Ceiling - dividers will only be keyed into the top/bottom of the box
-	* All Sides
-				
+    * None - no keying, dividers will be free to slide in and out
+    * Walls - dividers will only be keyed into the side walls of the box
+    * Floor/Ceiling - dividers will only be keyed into the top/bottom of the box
+    * All Sides
+                
 * Space Between Parts - how far apart the pieces are in the drawing produced
 
 ## Use - Schroff enclosures
@@ -122,3 +112,4 @@ version | Date | Notes
 0.93 | (21 Sept 2015) | Updated versioning to match original author's updated v0.91 plus adding my 0.02 
 0.93a | (21 Sept 2015) | Added hairline line thickness option for Epilog lasers
 0.94 | (4 Jan 2017) | Divider keying options
+0.95 | (19 Feb 2019) | No functionality changes.  Updated for Python3 compatibility and code cleanup.
