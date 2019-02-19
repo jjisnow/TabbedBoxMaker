@@ -64,7 +64,9 @@ def log(text):
 
 def draw_lines(xy_string):  # Draw lines from a list
     name = 'part'
-    style = {'stroke': '#000000', 'stroke-width': str(DEFAULT_LINE_THICKNESS), 'fill': 'none'}
+    style = {'stroke': '#000000',
+             'stroke-width': str(DEFAULT_LINE_THICKNESS),
+             'fill': 'none'}
     drw = {'style': simplestyle.formatStyle(style), inkex.addNS('label', 'inkscape'): name, 'd': xy_string}
     inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), drw)
     return
@@ -214,7 +216,7 @@ def side(root_coord, start_offset_coord, end_offset_coord, tab_vec, length, dire
         first = 0
 
     # finish the line off
-    s += 'L ' + str(rx + eox * thickness + dir_x * length) + ',' + str(ry + eoy * thickness + dir_y * length) + ' '
+    s += 'L {},{} '.format(rx + eox * thickness + dir_x * length, ry + eoy * thickness + dir_y * length)
     if is_tab and num_dividers > 0 and not is_divider:  # draw last for divider joints in side walls
         for m in range(1, int(num_dividers) + 1):
 
