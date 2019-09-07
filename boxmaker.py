@@ -36,14 +36,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-__version__ = "0.94"  # please report bugs, suggestions etc at https://github.com/paulh-rnd/TabbedBoxMaker ###
+__version__ = "0.94"  # please report bugs, suggestions etc at
+# https://github.com/paulh-rnd/TabbedBoxMaker ###
 
 import math
 import os
 
 import inkex
 import simplestyle
-
 
 try:
     # This is the typing library for local dev.   Can be ignored in production.  :)
@@ -64,10 +64,11 @@ def log(text):
 
 def draw_lines(xy_string):  # Draw lines from a list
     name = 'part'
-    style = {'stroke': '#000000',
+    style = {'stroke'      : '#000000',
              'stroke-width': str(DEFAULT_LINE_THICKNESS),
-             'fill': 'none'}
-    drw = {'style': simplestyle.formatStyle(style), inkex.addNS('label', 'inkscape'): name, 'd': xy_string}
+             'fill'        : 'none'}
+    drw = {'style'                         : simplestyle.formatStyle(style),
+           inkex.addNS('label', 'inkscape'): name, 'd': xy_string}
     inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), drw)
     return
 
@@ -77,24 +78,26 @@ def draw_lines(xy_string):  # Draw lines from a list
 def draw_circle(r, cx, cy):
     log("putting circle at ({},{})".format(cx, cy))
 
-    style = {'stroke': '#000000',
+    style = {'stroke'      : '#000000',
              'stroke-width': str(DEFAULT_LINE_THICKNESS),
-             'fill': 'none'}
+             'fill'        : 'none'}
 
-    ell_attribs = {'style': simplestyle.formatStyle(style),
-                   inkex.addNS('cx', 'sodipodi'): str(cx),
-                   inkex.addNS('cy', 'sodipodi'): str(cy),
-                   inkex.addNS('rx', 'sodipodi'): str(r),
-                   inkex.addNS('ry', 'sodipodi'): str(r),
+    ell_attribs = {'style'                         : simplestyle.formatStyle(style),
+                   inkex.addNS('cx', 'sodipodi')   : str(cx),
+                   inkex.addNS('cy', 'sodipodi')   : str(cy),
+                   inkex.addNS('rx', 'sodipodi')   : str(r),
+                   inkex.addNS('ry', 'sodipodi')   : str(r),
                    inkex.addNS('start', 'sodipodi'): str(0),
-                   inkex.addNS('end', 'sodipodi'): str(2 * math.pi),
-                   inkex.addNS('open', 'sodipodi'): 'true',  # all ellipse sectors we will draw are open
-                   inkex.addNS('type', 'sodipodi'): 'arc',
-                   'transform': ''}
+                   inkex.addNS('end', 'sodipodi')  : str(2 * math.pi),
+                   inkex.addNS('open', 'sodipodi') : 'true',
+                   # all ellipse sectors we will draw are open
+                   inkex.addNS('type', 'sodipodi') : 'arc',
+                   'transform'                     : ''}
     inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), ell_attribs)
 
 
-def side(root_coord, start_offset_coord, end_offset_coord, tab_vec, length, direction, is_tab, is_divider, num_dividers, div_spacing, div_offset):
+def side(root_coord, start_offset_coord, end_offset_coord, tab_vec, length, direction,
+         is_tab, is_divider, num_dividers, div_spacing, div_offset):
     # type: (Tuple[int, int], Tuple[int, int], Tuple[int, int], int, int, Tuple[int, int], bool, bool, int, int, int) -> str
 
     rx, ry = root_coord
@@ -143,7 +146,10 @@ def side(root_coord, start_offset_coord, end_offset_coord, tab_vec, length, dire
     #   divisions:divs ; gap width:gap_width ; tab width:tab_width
 
     for n in range(1, int(divs)):
-        if ((n % 2) ^ (not is_tab)) and num_dividers > 0 and not is_divider:  # draw holes for divider joints in side walls
+        if ((n % 2) ^ (
+                not is_tab)) and num_dividers > 0 and not is_divider:  # draw holes for
+            # divider
+            # joints in side walls
             w = gap_width if is_tab else tab_width
             if n == 1:
                 w -= sox * thickness
@@ -172,9 +178,9 @@ def side(root_coord, start_offset_coord, end_offset_coord, tab_vec, length, dire
 
                 draw_lines(h)
         if n % 2:
-            if n == 1 and num_dividers > 0 and is_divider:  # draw slots for dividers to slot into each other
+            if n == 1 and num_dividers > 0 and is_divider:  # draw slots for dividers
+                # to slot into each other
                 for m in range(1, int(num_dividers) + 1):
-
                     Dx = Vx + -dir_y * (div_spacing * m + div_offset)
                     Dy = Vy + dir_x * (div_spacing * m - div_offset)
                     h = 'M {},{} '.format(Dx, Dy)
@@ -216,10 +222,11 @@ def side(root_coord, start_offset_coord, end_offset_coord, tab_vec, length, dire
         first = 0
 
     # finish the line off
-    s += 'L {},{} '.format(rx + eox * thickness + dir_x * length, ry + eoy * thickness + dir_y * length)
-    if is_tab and num_dividers > 0 and not is_divider:  # draw last for divider joints in side walls
+    s += 'L {},{} '.format(rx + eox * thickness + dir_x * length,
+                           ry + eoy * thickness + dir_y * length)
+    if is_tab and num_dividers > 0 and not is_divider:  # draw last for divider joints
+        # in side walls
         for m in range(1, int(num_dividers) + 1):
-
             Dx = Vx
             Dy = Vy + dir_x * div_spacing * m
             h = 'M {},{} '.format(Dx, Dy)
@@ -252,19 +259,29 @@ class BoxMaker(inkex.Effect):
         inkex.Effect.__init__(self)
         # Define options
         self.OptionParser.add_option('--schroff', action='store', type='int',
-                                     dest='schroff', default=0, help='Enable Schroff mode')
+                                     dest='schroff', default=0,
+                                     help='Enable Schroff mode')
         self.OptionParser.add_option('--rail_height', action='store', type='float',
-                                     dest='rail_height', default=10.0, help='Height of rail')
+                                     dest='rail_height', default=10.0,
+                                     help='Height of rail')
         self.OptionParser.add_option('--rail_mount_depth', action='store', type='float',
-                                     dest='rail_mount_depth', default=17.4, help='Depth at which to place hole for rail mount bolt')
-        self.OptionParser.add_option('--rail_mount_centre_offset', action='store', type='float',
-                                     dest='rail_mount_centre_offset', default=0.0, help='How far toward row centreline to offset rail mount bolt (from rail centreline)')
+                                     dest='rail_mount_depth', default=17.4,
+                                     help='Depth at which to place hole for rail mount '
+                                          'bolt')
+        self.OptionParser.add_option('--rail_mount_centre_offset', action='store',
+                                     type='float',
+                                     dest='rail_mount_centre_offset', default=0.0,
+                                     help='How far toward row centreline to offset rail '
+                                          'mount bolt (from rail centreline)')
         self.OptionParser.add_option('--rows', action='store', type='int',
-                                     dest='rows', default=0, help='Number of Schroff rows')
+                                     dest='rows', default=0,
+                                     help='Number of Schroff rows')
         self.OptionParser.add_option('--hp', action='store', type='int',
-                                     dest='hp', default=0, help='Width (TE/HP units) of Schroff rows')
+                                     dest='hp', default=0,
+                                     help='Width (TE/HP units) of Schroff rows')
         self.OptionParser.add_option('--row_spacing', action='store', type='float',
-                                     dest='row_spacing', default=10.0, help='Height of rail')
+                                     dest='row_spacing', default=10.0,
+                                     help='Height of rail')
         self.OptionParser.add_option('--unit', action='store', type='string',
                                      dest='unit', default='mm', help='Measure Units')
         self.OptionParser.add_option('--inside', action='store', type='int',
@@ -282,11 +299,13 @@ class BoxMaker(inkex.Effect):
         self.OptionParser.add_option('--hairline', action='store', type='int',
                                      dest='hairline', default=0, help='Line Thickness')
         self.OptionParser.add_option('--thickness', action='store', type='float',
-                                     dest='thickness', default=10, help='Thickness of Material')
+                                     dest='thickness', default=10,
+                                     help='Thickness of Material')
         self.OptionParser.add_option('--kerf', action='store', type='float',
                                      dest='kerf', default=0.5, help='Kerf (width) of cut')
         self.OptionParser.add_option('--clearance', action='store', type='float',
-                                     dest='clearance', default=0.01, help='Clearance of joints')
+                                     dest='clearance', default=0.01,
+                                     help='Clearance of joints')
         self.OptionParser.add_option('--style', action='store', type='int',
                                      dest='style', default=25, help='Layout/Style')
         self.OptionParser.add_option('--spacing', action='store', type='float',
@@ -294,14 +313,18 @@ class BoxMaker(inkex.Effect):
         self.OptionParser.add_option('--boxtype', action='store', type='int',
                                      dest='boxtype', default=25, help='Box type')
         self.OptionParser.add_option('--div_l', action='store', type='int',
-                                     dest='div_l', default=25, help='Dividers (Length axis)')
+                                     dest='div_l', default=25,
+                                     help='Dividers (Length axis)')
         self.OptionParser.add_option('--div_w', action='store', type='int',
-                                     dest='div_w', default=25, help='Dividers (Width axis)')
+                                     dest='div_w', default=25,
+                                     help='Dividers (Width axis)')
         self.OptionParser.add_option('--keydiv', action='store', type='int',
-                                     dest='keydiv', default=3, help='Key dividers into walls/floor')
+                                     dest='keydiv', default=3,
+                                     help='Key dividers into walls/floor')
 
     def effect(self):
-        global parent, nom_tab, equal_tabs, thickness, correction, div_x, div_y, hairline, DEFAULT_LINE_THICKNESS, key_div_walls, key_div_floor
+        global parent, nom_tab, equal_tabs, thickness, correction, div_x, div_y, \
+            hairline, DEFAULT_LINE_THICKNESS, key_div_walls, key_div_floor
 
         # Get access to main SVG document element and get its dimensions.
         svg = self.document.getroot()
@@ -336,7 +359,8 @@ class BoxMaker(inkex.Effect):
             row_centre_spacing = self.unittouu(str(122.5) + unit)
             row_spacing = self.unittouu(str(self.options.row_spacing) + unit)
             rail_mount_depth = self.unittouu(str(self.options.rail_mount_depth) + unit)
-            rail_mount_centre_offset = self.unittouu(str(self.options.rail_mount_centre_offset) + unit)
+            rail_mount_centre_offset = self.unittouu(
+                str(self.options.rail_mount_centre_offset) + unit)
             rail_mount_radius = self.unittouu(str(2.5) + unit)
 
         # minimally different behaviour for schroffmaker.inx vs. boxmaker.inx
@@ -419,7 +443,8 @@ class BoxMaker(inkex.Effect):
         # tabbed= <abcd> 0=no tabs 1=tabs on this side
         # (sides: a=top, b=right, c=bottom, d=left)
         # pieceType: 1=XY, 2=XZ, 3=ZY
-        # note first two pieces in each set are the x-divider template and y-divider template respectively
+        # note first two pieces in each set are the x-divider template and y-divider
+        # template respectively
         if box_type == 2:  # One side open (x,y)
             if layout == 1:  # Diagrammatic Layout
                 pieces = [[(2, 0, 0, 1), (3, 0, 1, 1), x, z, 0b1010, 0b1101, 2],
@@ -549,7 +574,9 @@ class BoxMaker(inkex.Effect):
             rail_holes = 1 if piece[6] == 3 else 0
 
             if schroff and rail_holes:
-                log("rail holes enabled on piece {} at ({}, {})".format(idx, x_ + thickness, y_ + thickness))
+                log("rail holes enabled on piece {} at ({}, {})".format(idx,
+                                                                        x_ + thickness,
+                                                                        y_ + thickness))
                 log("abcd = ({},{},{},{})".format(a, b, c, d))
                 log("dxdy = ({},{})".format(dx, dy))
                 rhx_offset = rail_mount_depth + thickness
@@ -570,7 +597,8 @@ class BoxMaker(inkex.Effect):
                 else:
                     for n in range(0, rows):
                         log("drawing row {}, ry_start = {}".format(n + 1, ry_start))
-                        # if holes are offset (eg. Vector T-strut rails), they should be offset
+                        # if holes are offset (eg. Vector T-strut rails), they should
+                        # be offset
                         # toward each other, ie. toward the centreline of the Schroff row
                         rh1y = ry_start + rail_mount_centre_offset
                         rh2y = rh1y + row_centre_spacing - rail_mount_centre_offset
@@ -587,7 +615,8 @@ class BoxMaker(inkex.Effect):
                           direction=(1, 0),
                           is_tab=a,
                           is_divider=False,
-                          num_dividers=(key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * a_tabs,
+                          num_dividers=(key_div_floor | wall) * (
+                                  key_div_walls | floor) * div_x * y_holes * a_tabs,
                           div_spacing=y_spacing,
                           div_offset=div_offset)
 
@@ -599,7 +628,8 @@ class BoxMaker(inkex.Effect):
                           direction=(0, 1),
                           is_tab=b,
                           is_divider=False,
-                          num_dividers=(key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * b_tabs,
+                          num_dividers=(key_div_floor | wall) * (
+                                  key_div_walls | floor) * div_y * x_holes * b_tabs,
                           div_spacing=x_spacing,
                           div_offset=div_offset)
 
@@ -624,7 +654,9 @@ class BoxMaker(inkex.Effect):
                               direction=(-1, 0),
                               is_tab=c,
                               is_divider=False,
-                              num_dividers=(key_div_floor | wall) * (key_div_walls | floor) * div_x * y_holes * c_tabs,
+                              num_dividers=(key_div_floor | wall) * (
+                                      key_div_walls | floor) * div_x * y_holes *
+                                           c_tabs,
                               div_spacing=y_spacing,
                               div_offset=div_offset)
 
@@ -649,7 +681,9 @@ class BoxMaker(inkex.Effect):
                               direction=(0, -1),
                               is_tab=d,
                               is_divider=False,
-                              num_dividers=(key_div_floor | wall) * (key_div_walls | floor) * div_y * x_holes * d_tabs,
+                              num_dividers=(key_div_floor | wall) * (
+                                      key_div_walls | floor) * div_y * x_holes *
+                                           d_tabs,
                               div_spacing=x_spacing,
                               div_offset=div_offset)
 
@@ -675,7 +709,8 @@ class BoxMaker(inkex.Effect):
                     side_a = side(root_coord=(x_, y_),
                                   start_offset_coord=(d, a),
                                   end_offset_coord=(-b, a),
-                                  tab_vec=key_div_floor * a_tabs * (-thickness if a else thickness),
+                                  tab_vec=key_div_floor * a_tabs * (
+                                      -thickness if a else thickness),
                                   length=dx,
                                   direction=(1, 0),
                                   is_tab=a,
@@ -687,7 +722,8 @@ class BoxMaker(inkex.Effect):
                     side_b = side(root_coord=(x_ + dx, y_),
                                   start_offset_coord=(-b, a),
                                   end_offset_coord=(-b, -c),
-                                  tab_vec=key_div_walls * b_tabs * (thickness if key_div_walls * b else -thickness),
+                                  tab_vec=key_div_walls * b_tabs * (
+                                      thickness if key_div_walls * b else -thickness),
                                   length=dy,
                                   direction=(0, 1),
                                   is_tab=b,
@@ -699,7 +735,8 @@ class BoxMaker(inkex.Effect):
                     side_c = side(root_coord=(x_ + dx, y_ + dy),
                                   start_offset_coord=(-b, -c),
                                   end_offset_coord=(d, -c),
-                                  tab_vec=key_div_floor * c_tabs * (thickness if c else -thickness),
+                                  tab_vec=key_div_floor * c_tabs * (
+                                      thickness if c else -thickness),
                                   length=dx,
                                   direction=(-1, 0),
                                   is_tab=c,
@@ -711,7 +748,8 @@ class BoxMaker(inkex.Effect):
                     side_d = side(root_coord=(x_, y_ + dy),
                                   start_offset_coord=(d, -c),
                                   end_offset_coord=(d, a),
-                                  tab_vec=key_div_walls * d_tabs * (-thickness if d else thickness),
+                                  tab_vec=key_div_walls * d_tabs * (
+                                      -thickness if d else thickness),
                                   length=dy,
                                   direction=(0, -1),
                                   is_tab=d,
@@ -732,7 +770,8 @@ class BoxMaker(inkex.Effect):
                     side_a = side(root_coord=(x_, y_),
                                   start_offset_coord=(d, a),
                                   end_offset_coord=(-b, a),
-                                  tab_vec=key_div_walls * a_tabs * (-thickness if a else thickness),
+                                  tab_vec=key_div_walls * a_tabs * (
+                                      -thickness if a else thickness),
                                   length=dx,
                                   direction=(1, 0),
                                   is_tab=a,
@@ -744,7 +783,8 @@ class BoxMaker(inkex.Effect):
                     side_b = side(root_coord=(x_ + dx, y_),
                                   start_offset_coord=(-b, a),
                                   end_offset_coord=(-b, -c),
-                                  tab_vec=key_div_floor * b_tabs * (thickness if b else -thickness),
+                                  tab_vec=key_div_floor * b_tabs * (
+                                      thickness if b else -thickness),
                                   length=dy,
                                   direction=(0, 1),
                                   is_tab=b,
@@ -756,7 +796,8 @@ class BoxMaker(inkex.Effect):
                     side_c = side(root_coord=(x_ + dx, y_ + dy),
                                   start_offset_coord=(-b, -c),
                                   end_offset_coord=(d, -c),
-                                  tab_vec=key_div_walls * c_tabs * (thickness if c else -thickness),
+                                  tab_vec=key_div_walls * c_tabs * (
+                                      thickness if c else -thickness),
                                   length=dx,
                                   direction=(-1, 0),
                                   is_tab=c,
@@ -768,7 +809,8 @@ class BoxMaker(inkex.Effect):
                     side_d = side(root_coord=(x_, y_ + dy),
                                   start_offset_coord=(d, -c),
                                   end_offset_coord=(d, a),
-                                  tab_vec=key_div_floor * d_tabs * (-thickness if d else thickness),
+                                  tab_vec=key_div_floor * d_tabs * (
+                                      -thickness if d else thickness),
                                   length=dy,
                                   direction=(0, -1),
                                   is_tab=d,
