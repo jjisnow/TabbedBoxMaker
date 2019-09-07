@@ -437,11 +437,16 @@ class BoxMaker(inkex.Effect):
         if error:
             exit()
 
-        # layout format:(rootx),(rooty),Xlength,Ylength,tabInfo,tabbed,pieceType
-        # root= (spacing,x,y,z) * values in tuple
+        # layout format:
+        #   (root_x), (root_y), X_length, Y_length, tabInfo, tabbed, pieceType
+        #
+        # root = (spacing,x,y,z) * values in multiples of dimension of top left corner
+        # eg. (3, 1, 0, 1) means x position = 3*spacing + 1*x dimension + 1*z dimension
+        #
         # tabInfo= <abcd> 0=holes 1=tabs
         # tabbed= <abcd> 0=no tabs 1=tabs on this side
         # (sides: a=top, b=right, c=bottom, d=left)
+        #
         # pieceType: 1=XY, 2=XZ, 3=ZY
         # note first two pieces in each set are the x-divider template and y-divider
         # template respectively
@@ -567,10 +572,10 @@ class BoxMaker(inkex.Effect):
             d_tabs = tabbed & 1  # extract tabbed flag for each side
             x_spacing = (x - thickness) / (div_y + 1)
             y_spacing = (y - thickness) / (div_x + 1)
-            x_holes = 1 if piece[6] < 3 else 0
-            y_holes = 1 if piece[6] != 2 else 0
+            x_holes = 1 if piece[6] < 3 else 0   # 3 is a YZ piece
+            y_holes = 1 if piece[6] != 2 else 0  # 2 is an XZ piece
             wall = 1 if piece[6] > 1 else 0
-            floor = 1 if piece[6] == 1 else 0
+            floor = 1 if piece[6] == 1 else 0    # 1 is an XY piece
             rail_holes = 1 if piece[6] == 3 else 0
 
             if schroff and rail_holes:
